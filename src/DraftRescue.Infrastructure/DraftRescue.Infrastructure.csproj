@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DraftRescue.Infrastructure</RootNamespace>
+    <AssemblyName>DraftRescue.Infrastructure</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DraftRescue.Domain\DraftRescue.Domain.csproj" />
+    <ProjectReference Include="..\DraftRescue.Application\DraftRescue.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+  </ItemGroup>
+</Project>
