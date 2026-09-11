@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">DraftRescue mark</title>
+  <desc id="desc">A folded page forming a protective rescue shield.</desc>
+  <rect x="8" y="8" width="240" height="240" rx="58" fill="#18243B"/>
+  <path d="M72 42h78l34 34v92c0 18-14 32-32 32H72c-18 0-32-14-32-32V74c0-18 14-32 32-32Z" fill="#F7F9FC"/>
+  <path d="M150 42v36c0 8 6 14 14 14h20" fill="#DCE6F5"/>
+  <path d="M92 105v51l19 19 51-51-16-16-35 35v-38Z" fill="#FF6B5F"/>
+  <path d="M92 105h19v38l35-35 16 16-51 51-19-19Z" fill="#4D8DFF" opacity=".95"/>
+</svg>
