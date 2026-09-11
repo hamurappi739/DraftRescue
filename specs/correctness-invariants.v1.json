@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "invariants": [
+    {
+      "id": "C-001",
+      "title": "Monotonic snapshot state"
+    },
+    {
+      "id": "C-002",
+      "title": "One current durable row"
+    },
+    {
+      "id": "C-003",
+      "title": "Stale context isolation"
+    },
+    {
+      "id": "C-004",
+      "title": "Deterministic profile resolution"
+    },
+    {
+      "id": "C-005",
+      "title": "Deterministic recovery predicate"
+    },
+    {
+      "id": "C-006",
+      "title": "Single-flight restore"
+    },
+    {
+      "id": "C-007",
+      "title": "Idempotent discard"
+    },
+    {
+      "id": "C-008",
+      "title": "Copy is non-terminal"
+    },
+    {
+      "id": "C-009",
+      "title": "Verified-restore deletion rule"
+    },
+    {
+      "id": "C-010",
+      "title": "Metadata list is body-free"
+    },
+    {
+      "id": "C-011",
+      "title": "Expiry cannot revive"
+    },
+    {
+      "id": "C-012",
+      "title": "Transactional current state"
+    },
+    {
+      "id": "C-013",
+      "title": "Command result honesty"
+    },
+    {
+      "id": "C-014",
+      "title": "Duplicate UI activation is safe"
+    },
+    {
+      "id": "C-015",
+      "title": "Unknown target version is not supported"
+    },
+    {
+      "id": "C-016",
+      "title": "Latest-context convergence"
+    },
+    {
+      "id": "C-017",
+      "title": "Deterministic candidate normalization"
+    },
+    {
+      "id": "C-018",
+      "title": "Callback boundedness"
+    },
+    {
+      "id": "C-019",
+      "title": "Deny precedence is order-independent"
+    },
+    {
+      "id": "C-020",
+      "title": "Allowed capability is generation-bound"
+    },
+    {
+      "id": "C-021",
+      "title": "Experiment artifact validity"
+    },
+    {
+      "id": "C-022",
+      "title": "Candidate metadata is bounded"
+    },
+    {
+      "id": "C-023",
+      "title": "Backpressure never promotes stale context"
+    },
+    {
+      "id": "C-024",
+      "title": "Missing negative evidence blocks certification"
+    },
+    {
+      "id": "C-025",
+      "title": "Provider failure remains typed and bounded"
+    },
+    {
+      "id": "C-026",
+      "title": "Capability single-consumption"
+    },
+    {
+      "id": "C-027",
+      "title": "Capability deadline uses monotonic time"
+    },
+    {
+      "id": "C-028",
+      "title": "Security policy determinism"
+    },
+    {
+      "id": "C-029",
+      "title": "Capability issuance rechecks current binding"
+    },
+    {
+      "id": "C-030",
+      "title": "Phase 2 zero content reads"
+    },
+    {
+      "id": "C-031",
+      "title": "Canonical deny reason priority"
+    },
+    {
+      "id": "C-032",
+      "title": "Capability registry is bounded"
+    },
+    {
+      "id": "C-033",
+      "title": "Reader requires claimed capability"
+    },
+    {
+      "id": "C-034",
+      "title": "Deterministic read-strategy selection"
+    },
+    {
+      "id": "C-035",
+      "title": "Oversize result is explicit"
+    },
+    {
+      "id": "C-036",
+      "title": "Empty differs from failure"
+    },
+    {
+      "id": "C-037",
+      "title": "Read result is generation/sequence bound"
+    },
+    {
+      "id": "C-038",
+      "title": "In-memory tracker is monotonic current state"
+    },
+    {
+      "id": "C-039",
+      "title": "Capture is exact/idempotent"
+    },
+    {
+      "id": "C-040",
+      "title": "Plaintext ownership remains bounded"
+    },
+    {
+      "id": "C-041",
+      "title": "Persisted sequence is final stale-write authority"
+    },
+    {
+      "id": "C-042",
+      "title": "Protect success is not commit success"
+    },
+    {
+      "id": "C-043",
+      "title": "Equal-sequence contradiction is not silently accepted"
+    },
+    {
+      "id": "C-044",
+      "title": "SQLite policy is verified, not assumed"
+    },
+    {
+      "id": "C-045",
+      "title": "Expiry visibility is independent of cleanup success"
+    },
+    {
+      "id": "C-046",
+      "title": "Existing store prevents silent fingerprint identity reset"
+    },
+    {
+      "id": "C-047",
+      "title": "Known migrations are bounded and fail-closed"
+    },
+    {
+      "id": "C-048",
+      "title": "Persistence writer remains serialized and bounded"
+    },
+    {
+      "id": "C-049",
+      "title": "Plaintext-at-rest certification is reproducible"
+    },
+    {
+      "id": "C-050",
+      "title": "Corruption handling preserves truthful state"
+    }
+  ]
+}

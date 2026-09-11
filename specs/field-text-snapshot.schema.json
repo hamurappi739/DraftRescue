@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "draftrescue.field-text-snapshot.schema.v1",
+  "title": "FieldTextSnapshot test/fixture representation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contextGeneration",
+    "snapshotSequence",
+    "profileId",
+    "readStrategy",
+    "text",
+    "textLengthUtf16",
+    "isEmpty"
+  ],
+  "properties": {
+    "contextGeneration": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "snapshotSequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "profileId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "readStrategy": {
+      "enum": [
+        "TextPatternDocument",
+        "ValuePatternCertified"
+      ]
+    },
+    "text": {
+      "type": "string",
+      "maxLength": 262144
+    },
+    "textLengthUtf16": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 262144
+    },
+    "isEmpty": {
+      "type": "boolean"
+    }
+  }
+}

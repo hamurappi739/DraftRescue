@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "note": "Test descriptors only; production AllowedFieldHandle is never serialized.",
+  "fixtures": [
+    {
+      "id": "CAPF-001",
+      "scenario": "fresh immediate claim",
+      "generationAtIssue": 10,
+      "generationAtClaim": 10,
+      "ageMs": 10,
+      "claimCount": 1,
+      "expected": "Claimed"
+    },
+    {
+      "id": "CAPF-002",
+      "scenario": "generation changed",
+      "generationAtIssue": 10,
+      "generationAtClaim": 11,
+      "ageMs": 10,
+      "claimCount": 1,
+      "expected": "RevokedStaleGeneration"
+    },
+    {
+      "id": "CAPF-003",
+      "scenario": "expired default deadline",
+      "generationAtIssue": 10,
+      "generationAtClaim": 10,
+      "ageMs": 1001,
+      "claimCount": 1,
+      "expected": "Expired"
+    },
+    {
+      "id": "CAPF-004",
+      "scenario": "second claim",
+      "generationAtIssue": 10,
+      "generationAtClaim": 10,
+      "ageMs": 20,
+      "claimCount": 2,
+      "expected": "SecondAlreadyConsumed"
+    },
+    {
+      "id": "CAPF-005",
+      "scenario": "binding missing",
+      "generationAtIssue": 10,
+      "generationAtClaim": 10,
+      "ageMs": 20,
+      "claimCount": 1,
+      "binding": "Missing",
+      "expected": "RevokedBindingMissing"
+    }
+  ]
+}

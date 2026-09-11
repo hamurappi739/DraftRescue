@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "mapping": [
+    {
+      "invariantId": "C-001",
+      "testIds": [
+        "TRK-006",
+        "PST-010",
+        "PTX-003"
+      ]
+    },
+    {
+      "invariantId": "C-002",
+      "testIds": [
+        "TRK-001",
+        "PST-002",
+        "PTX-007"
+      ]
+    },
+    {
+      "invariantId": "C-003",
+      "testIds": [
+        "OBS-003",
+        "E2E-005"
+      ]
+    },
+    {
+      "invariantId": "C-004",
+      "testIds": [
+        "PRF-002",
+        "PRF-003",
+        "PRF-007",
+        "PRF-014"
+      ]
+    },
+    {
+      "invariantId": "C-005",
+      "testIds": [
+        "MAT-001",
+        "MAT-002",
+        "MAT-003",
+        "RMF-001",
+        "RMF-002",
+        "RMF-003",
+        "RMF-004"
+      ]
+    },
+    {
+      "invariantId": "C-006",
+      "testIds": [
+        "UI-007"
+      ]
+    },
+    {
+      "invariantId": "C-007",
+      "testIds": [
+        "PTX-008"
+      ]
+    },
+    {
+      "invariantId": "C-008",
+      "testIds": [
+        "UI-004",
+        "E2E-010"
+      ]
+    },
+    {
+      "invariantId": "C-009",
+      "testIds": [
+        "RST-005",
+        "RST-006",
+        "PTX-013",
+        "E2E-009"
+      ]
+    },
+    {
+      "invariantId": "C-010",
+      "testIds": [
+        "ARC-004",
+        "PST-003",
+        "UI-002",
+        "UI-006"
+      ]
+    },
+    {
+      "invariantId": "C-011",
+      "testIds": [
+        "PST-007",
+        "E2E-002"
+      ]
+    },
+    {
+      "invariantId": "C-012",
+      "testIds": [
+        "PST-011",
+        "PTX-002",
+        "PTX-005",
+        "PTX-006"
+      ]
+    },
+    {
+      "invariantId": "C-013",
+      "testIds": [
+        "ERR-001",
+        "RST-005",
+        "RST-006"
+      ]
+    },
+    {
+      "invariantId": "C-014",
+      "testIds": [
+        "UI-007"
+      ]
+    },
+    {
+      "invariantId": "C-015",
+      "testIds": [
+        "PRF-001",
+        "PRF-002",
+        "PRF-013"
+      ]
+    },
+    {
+      "invariantId": "C-016",
+      "testIds": [
+        "OBS-005",
+        "OBS-006",
+        "OBS-007"
+      ]
+    },
+    {
+      "invariantId": "C-017",
+      "testIds": [
+        "OBS-008"
+      ]
+    },
+    {
+      "invariantId": "C-018",
+      "testIds": [
+        "OBS-004",
+        "PERF-005"
+      ]
+    },
+    {
+      "invariantId": "C-019",
+      "testIds": [
+        "SEC-012"
+      ]
+    },
+    {
+      "invariantId": "C-020",
+      "testIds": [
+        "SEC-011"
+      ]
+    },
+    {
+      "invariantId": "C-021",
+      "testIds": [
+        "EXP-001",
+        "EXP-002"
+      ]
+    },
+    {
+      "invariantId": "C-022",
+      "testIds": [
+        "OBS-008",
+        "PERF-004"
+      ]
+    },
+    {
+      "invariantId": "C-023",
+      "testIds": [
+        "OBS-006",
+        "OBS-007"
+      ]
+    },
+    {
+      "invariantId": "C-024",
+      "testIds": [
+        "CERT-002"
+      ]
+    },
+    {
+      "invariantId": "C-025",
+      "testIds": [
+        "FI-001",
+        "FI-002",
+        "PERF-006"
+      ]
+    },
+    {
+      "invariantId": "C-026",
+      "testIds": [
+        "CAP-001",
+        "CAP-002",
+        "CAP-003"
+      ]
+    },
+    {
+      "invariantId": "C-027",
+      "testIds": [
+        "CAP-005"
+      ]
+    },
+    {
+      "invariantId": "C-028",
+      "testIds": [
+        "SEC-022",
+        "P2F-006"
+      ]
+    },
+    {
+      "invariantId": "C-029",
+      "testIds": [
+        "SEC-015",
+        "SEC-016",
+        "CAP-004",
+        "P2F-005"
+      ]
+    },
+    {
+      "invariantId": "C-030",
+      "testIds": [
+        "ARC-007",
+        "P2F-001",
+        "P2F-002",
+        "P2F-003",
+        "P2F-004"
+      ]
+    },
+    {
+      "invariantId": "C-031",
+      "testIds": [
+        "SEC-022"
+      ]
+    },
+    {
+      "invariantId": "C-032",
+      "testIds": [
+        "CAP-008",
+        "P2F-006"
+      ]
+    },
+    {
+      "invariantId": "C-041",
+      "testIds": [
+        "PST-018",
+        "P4F-009"
+      ]
+    },
+    {
+      "invariantId": "C-042",
+      "testIds": [
+        "P4F-001",
+        "P4F-007",
+        "P4F-008"
+      ]
+    },
+    {
+      "invariantId": "C-043",
+      "testIds": [
+        "PST-018",
+        "P4F-010"
+      ]
+    },
+    {
+      "invariantId": "C-044",
+      "testIds": [
+        "PST-015",
+        "PST-016",
+        "PST-017"
+      ]
+    },
+    {
+      "invariantId": "C-045",
+      "testIds": [
+        "PST-007",
+        "P4F-015"
+      ]
+    },
+    {
+      "invariantId": "C-046",
+      "testIds": [
+        "PST-013",
+        "P4F-003",
+        "P4F-004"
+      ]
+    },
+    {
+      "invariantId": "C-047",
+      "testIds": [
+        "P4F-012",
+        "P4F-013"
+      ]
+    },
+    {
+      "invariantId": "C-048",
+      "testIds": [
+        "P4F-006",
+        "P4F-016"
+      ]
+    },
+    {
+      "invariantId": "C-049",
+      "testIds": [
+        "PST-020",
+        "P4F-017",
+        "P4F-020"
+      ]
+    },
+    {
+      "invariantId": "C-050",
+      "testIds": [
+        "PST-019",
+        "P4F-011"
+      ]
+    }
+  ]
+}

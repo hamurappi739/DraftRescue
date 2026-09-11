@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "draftrescue/experiment-result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "experimentId",
+    "runId",
+    "scenarioId",
+    "outcome",
+    "contentSafetyAudit"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "experimentId": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]{3,64}$"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "scenarioId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "Pass",
+        "Fail",
+        "Inconclusive"
+      ]
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "failureCodes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DR-[A-Z]{3}-[0-9]{4}$"
+      }
+    },
+    "invariantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[PC]-[0-9]{3}$"
+      }
+    },
+    "testIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2,5}-[0-9]{3}$"
+      }
+    },
+    "measurements": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "number",
+          "integer",
+          "boolean",
+          "string"
+        ]
+      }
+    },
+    "contentSafetyAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawTargetTextCaptured",
+        "rawDynamicUiaStringsLogged",
+        "clipboardRead",
+        "clipboardWritten",
+        "networkTextSent",
+        "testDataClass"
+      ],
+      "properties": {
+        "rawTargetTextCaptured": {
+          "const": false
+        },
+        "rawDynamicUiaStringsLogged": {
+          "const": false
+        },
+        "clipboardRead": {
+          "const": false
+        },
+        "clipboardWritten": {
+          "const": false
+        },
+        "networkTextSent": {
+          "const": false
+        },
+        "testDataClass": {
+          "type": "string",
+          "enum": [
+            "Synthetic",
+            "MetadataOnly"
+          ]
+        }
+      }
+    }
+  }
+}

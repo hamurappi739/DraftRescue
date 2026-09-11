@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "safeDiagnosticFieldAllowlist": [
+    "error_code",
+    "component",
+    "operation",
+    "app_profile_id",
+    "app_profile_version",
+    "target_version_bucket",
+    "control_type_enum",
+    "framework_hint_enum",
+    "context_generation",
+    "snapshot_sequence",
+    "elapsed_ms",
+    "retry_count",
+    "support_state",
+    "result_category"
+  ],
+  "errors": [
+    {
+      "code": "DR-OBS-1001",
+      "category": "observation",
+      "name": "foreground_context_unavailable",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-OBS-1002",
+      "category": "observation",
+      "name": "no_supported_editable_candidate",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-OBS-1003",
+      "category": "observation",
+      "name": "stale_context_ignored",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-OBS-1004",
+      "category": "observation",
+      "name": "provider_timeout",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-OBS-1005",
+      "category": "observation",
+      "name": "provider_failure",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-SEC-2001",
+      "category": "security",
+      "name": "password_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-SEC-2002",
+      "category": "security",
+      "name": "credential_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-SEC-2003",
+      "category": "security",
+      "name": "banking_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-SEC-2004",
+      "category": "security",
+      "name": "private_browsing_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-SEC-2005",
+      "category": "security",
+      "name": "uncertain_denied",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-SEC-2006",
+      "category": "security",
+      "name": "integrity_boundary_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-SEC-2007",
+      "category": "security",
+      "name": "unsupported_policy_denied",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-READ-3001",
+      "category": "read",
+      "name": "allowed_handle_expired",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-READ-3002",
+      "category": "read",
+      "name": "target_changed",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-READ-3003",
+      "category": "read",
+      "name": "capability_unsupported",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-READ-3004",
+      "category": "read",
+      "name": "eligible_read_timeout",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-READ-3005",
+      "category": "read",
+      "name": "eligible_read_failed",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-TRK-4001",
+      "category": "tracking",
+      "name": "stale_snapshot_ignored",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-TRK-4002",
+      "category": "tracking",
+      "name": "invalid_transition",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-TRK-4003",
+      "category": "tracking",
+      "name": "active_identity_conflict",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-PRO-5001",
+      "category": "protection",
+      "name": "protect_failed",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-PRO-5002",
+      "category": "protection",
+      "name": "unprotect_failed",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-PRO-5003",
+      "category": "protection",
+      "name": "unknown_protection_version",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-PRO-5004",
+      "category": "protection",
+      "name": "installation_secret_unavailable",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-DB-6001",
+      "category": "persistence",
+      "name": "store_open_failed",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-DB-6002",
+      "category": "persistence",
+      "name": "transaction_failed",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-DB-6003",
+      "category": "persistence",
+      "name": "store_corrupt",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-DB-6004",
+      "category": "persistence",
+      "name": "schema_incompatible",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-DB-6005",
+      "category": "persistence",
+      "name": "stale_upsert_ignored",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-DB-6006",
+      "category": "persistence",
+      "name": "migration_failed",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-PRF-7001",
+      "category": "profile",
+      "name": "no_profile",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-PRF-7002",
+      "category": "profile",
+      "name": "target_version_uncertified",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-PRF-7003",
+      "category": "profile",
+      "name": "target_version_blocked",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-PRF-7004",
+      "category": "profile",
+      "name": "ambiguous_profiles",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-PRF-7005",
+      "category": "profile",
+      "name": "invalid_manifest",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-MAT-8001",
+      "category": "matching",
+      "name": "target_unavailable",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-MAT-8002",
+      "category": "matching",
+      "name": "target_ambiguous",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-MAT-8003",
+      "category": "matching",
+      "name": "required_anchor_missing",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-MAT-8004",
+      "category": "matching",
+      "name": "fatal_conflict",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-MAT-8005",
+      "category": "matching",
+      "name": "target_unsafe",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-RST-9001",
+      "category": "restore",
+      "name": "target_changed",
+      "retryDisposition": "RetryAfterContextChange"
+    },
+    {
+      "code": "DR-RST-9002",
+      "category": "restore",
+      "name": "write_unsupported",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-RST-9003",
+      "category": "restore",
+      "name": "write_failed",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-RST-9004",
+      "category": "restore",
+      "name": "verification_mismatch",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-RST-9005",
+      "category": "restore",
+      "name": "applied_unverified",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-RST-9006",
+      "category": "restore",
+      "name": "already_in_flight",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-CLP-10001",
+      "category": "clipboard",
+      "name": "clipboard_unavailable",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-CLP-10002",
+      "category": "clipboard",
+      "name": "clipboard_write_failed",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-CFG-11001",
+      "category": "configuration",
+      "name": "settings_invalid",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-CFG-11002",
+      "category": "configuration",
+      "name": "settings_persistence_failed",
+      "retryDisposition": "UserActionRequired"
+    },
+    {
+      "code": "DR-IPC-12001",
+      "category": "ipc",
+      "name": "primary_instance_unavailable",
+      "retryDisposition": "RetryWithBackoff"
+    },
+    {
+      "code": "DR-IPC-12002",
+      "category": "ipc",
+      "name": "unsupported_command",
+      "retryDisposition": "NoRetry"
+    },
+    {
+      "code": "DR-UPD-13001",
+      "category": "update",
+      "name": "migration_precondition_failed",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-UPD-13002",
+      "category": "update",
+      "name": "migration_interrupted_rolled_back",
+      "retryDisposition": "FatalForFeature"
+    },
+    {
+      "code": "DR-READ-3006",
+      "category": "Read",
+      "title": "allowed handle already consumed"
+    },
+    {
+      "code": "DR-READ-3007",
+      "category": "Read",
+      "title": "allowed handle revoked or stale"
+    },
+    {
+      "code": "DR-READ-3008",
+      "category": "Read",
+      "title": "allowed handle invalid or forged"
+    },
+    {
+      "code": "DR-READ-3009",
+      "category": "Read",
+      "title": "target text exceeds certified capture limit"
+    },
+    {
+      "code": "DR-READ-3010",
+      "category": "Read",
+      "title": "provider returned invalid or inconsistent snapshot"
+    },
+    {
+      "code": "DR-READ-3011",
+      "category": "Read",
+      "title": "late or stale read result discarded"
+    }
+  ]
+}

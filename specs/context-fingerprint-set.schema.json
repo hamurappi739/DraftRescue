@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://draftrescue.local/schemas/context-fingerprint-set.v1.json",
+  "title": "DraftRescue Context Fingerprint Set v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fingerprintVersion", "applicationId", "controlRole"],
+  "properties": {
+    "fingerprintVersion": { "const": 1 },
+    "applicationId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "windowClassToken": { "$ref": "#/$defs/token" },
+    "windowTitleToken": { "$ref": "#/$defs/token" },
+    "browserOriginToken": { "$ref": "#/$defs/token" },
+    "controlAutomationIdToken": { "$ref": "#/$defs/token" },
+    "controlClassToken": { "$ref": "#/$defs/token" },
+    "controlRole": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "fieldLabelToken": { "$ref": "#/$defs/token" },
+    "geometryBucket": { "type": ["string", "null"], "maxLength": 64 },
+    "appSpecificTokens": {
+      "type": "array",
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/token" }
+    }
+  },
+  "$defs": {
+    "token": {
+      "type": ["string", "null"],
+      "description": "Base64-encoded 16-byte truncated keyed HMAC token."
+    }
+  }
+}

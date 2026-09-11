@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "draftrescue/candidate-metadata.schema.json",
+  "title": "TargetFieldCandidateMetadata research fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "contextGeneration",
+    "observationSequence",
+    "application",
+    "controlKind",
+    "frameworkKind",
+    "isPassword",
+    "providerHealth"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "contextGeneration": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observationSequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "version"
+      ],
+      "properties": {
+        "family": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "controlKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Edit",
+        "Document",
+        "Pane",
+        "Window",
+        "Button",
+        "Menu",
+        "Dialog",
+        "Other"
+      ]
+    },
+    "frameworkKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Win32",
+        "WPF",
+        "WinUI",
+        "Chromium",
+        "Avalonia",
+        "Other"
+      ]
+    },
+    "isPassword": {
+      "type": "string",
+      "enum": [
+        "True",
+        "False",
+        "Unknown"
+      ]
+    },
+    "isEnabled": {
+      "type": "string",
+      "enum": [
+        "True",
+        "False",
+        "Unknown"
+      ]
+    },
+    "isKeyboardFocusable": {
+      "type": "string",
+      "enum": [
+        "True",
+        "False",
+        "Unknown"
+      ]
+    },
+    "hasKeyboardFocus": {
+      "type": "string",
+      "enum": [
+        "True",
+        "False",
+        "Unknown"
+      ]
+    },
+    "isOffscreen": {
+      "type": "string",
+      "enum": [
+        "True",
+        "False",
+        "Unknown"
+      ]
+    },
+    "providerHealth": {
+      "type": "string",
+      "enum": [
+        "Healthy",
+        "Degraded",
+        "Failed",
+        "Unknown"
+      ]
+    },
+    "capabilityHints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ValuePatternAvailable",
+          "TextPatternAvailable",
+          "LegacyPatternAvailable"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "integrityCompatibility": {
+      "type": "string",
+      "enum": [
+        "Compatible",
+        "Incompatible",
+        "Unknown"
+      ]
+    }
+  }
+}
