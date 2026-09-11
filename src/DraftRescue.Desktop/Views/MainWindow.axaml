@@ -1,0 +1,39 @@
+<Window
+    x:Class="DraftRescue.Desktop.Views.MainWindow"
+    x:DataType="vm:MainWindowViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:DraftRescue.Desktop.ViewModels"
+    Width="760"
+    Height="520"
+    MinWidth="620"
+    MinHeight="440"
+    Title="{Binding Title}">
+  <Grid Margin="32" RowDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+      <Border Width="52" Height="52" CornerRadius="15" Background="#18243B" Padding="10">
+        <PathIcon Width="32" Height="32" Foreground="#FFFFFF" Data="M8,3 L24,3 L29,8 L29,25 C29,27.2 27.2,29 25,29 L7,29 C4.8,29 3,27.2 3,25 L3,7 C3,4.8 4.8,3 7,3 Z M10,8 L10,21 L14,25 L24,15 L21,12 L14,19 L14,8 Z" />
+      </Border>
+      <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+        <TextBlock FontSize="26" FontWeight="SemiBold" Text="{Binding Title}" />
+        <TextBlock Opacity="0.72" Text="{Binding Subtitle}" />
+      </StackPanel>
+      <Grid Grid.Column="2" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="10" VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center" Text="{Binding LanguageLabel}" />
+        <ComboBox Grid.Column="1" Width="112" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" />
+        <TextBlock Grid.Row="1" VerticalAlignment="Center" Text="{Binding ThemeLabel}" />
+        <ToggleSwitch Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding IsDarkTheme}" OnContent="{Binding DarkThemeOn}" OffContent="{Binding DarkThemeOff}" />
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="1" Margin="0,32,0,24" Padding="28" CornerRadius="14" BorderThickness="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="540" Spacing="12">
+        <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="SemiBold" Text="{Binding SectionTitle}" />
+        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.78" Text="{Binding Status}" />
+        <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.62" Text="{Binding PrivacySummary}" />
+      </StackPanel>
+    </Border>
+
+    <TextBlock Grid.Row="2" HorizontalAlignment="Center" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap" Opacity="0.62" Text="{Binding ScopeNote}" />
+  </Grid>
+</Window>
