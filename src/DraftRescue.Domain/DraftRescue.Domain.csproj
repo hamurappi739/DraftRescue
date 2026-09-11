@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DraftRescue.Domain</RootNamespace>
+    <AssemblyName>DraftRescue.Domain</AssemblyName>
+  </PropertyGroup>
+</Project>
