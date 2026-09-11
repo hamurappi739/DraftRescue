@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "rules": [
+    {
+      "id": "P3-ARCH-001",
+      "rule": "content-reader-requires-allowed-handle"
+    },
+    {
+      "id": "P3-ARCH-002",
+      "rule": "no-gettext-minus-one-production"
+    },
+    {
+      "id": "P3-ARCH-003",
+      "rule": "no-generic-legacyaccessible-content-fallback"
+    },
+    {
+      "id": "P3-ARCH-004",
+      "rule": "phase3-capture-no-repository-protector-clipboard-network-ui-body-dependency"
+    },
+    {
+      "id": "P3-ARCH-005",
+      "rule": "field-text-snapshot-not-serializable-persistence-contract"
+    }
+  ]
+}

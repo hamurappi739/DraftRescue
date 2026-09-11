@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "defaultLogicalMaxUtf16": 65536,
+  "absoluteHardCapUtf16": 262144,
+  "textPatternUnlimitedReadForbidden": true,
+  "textPatternProbeExtraChars": 1,
+  "valuePatternRequiresCertifiedBoundedSurface": true,
+  "genericLegacyIAccessibleFallback": false,
+  "genericKeyboardFallback": false,
+  "genericClipboardFallback": false,
+  "genericTextNormalization": "none",
+  "emptyStabilizationBaselineMs": 300,
+  "emptyRequiresIndependentAuthorizedReads": 2
+}

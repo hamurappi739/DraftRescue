@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "phase": 2,
+  "forbiddenSecurityDependencies": [
+    "IEligibleFieldTextReader",
+    "IDraftTracker",
+    "IDraftRepository",
+    "IDraftProtector",
+    "IClipboardService",
+    "IRestoreAdapter",
+    "IRestoreService"
+  ],
+  "forbiddenPrePhase3ApiPatterns": [
+    "ValuePattern.Value",
+    "DocumentRange.GetText",
+    "TextPatternRange.GetText",
+    "LegacyIAccessible.Value",
+    "Clipboard.Get",
+    "GetAsyncKeyState",
+    "WH_KEYBOARD",
+    "WH_KEYBOARD_LL"
+  ],
+  "allowedCapabilityOperation": "ReadSnapshot",
+  "capabilitySerializable": false,
+  "capabilityDefaultMaxAgeMs": 1000,
+  "capabilityAbsoluteMaxAgeMs": 2000,
+  "capabilityMaxClaims": 1
+}

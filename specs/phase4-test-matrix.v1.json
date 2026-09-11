@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "tests": [
+    {
+      "id": "P4F-001",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-002",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-003",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-004",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-005",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-006",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-007",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-008",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-009",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-010",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-011",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-012",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-013",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-014",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-015",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-016",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-017",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-018",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-019",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "P4F-020",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-001",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-002",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-003",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-004",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-005",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-006",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-007",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-008",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-009",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-010",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-011",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-012",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-013",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-014",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-015",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-016",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-017",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-018",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-019",
+      "phase": 4,
+      "mandatory": true
+    },
+    {
+      "id": "PST-020",
+      "phase": 4,
+      "mandatory": true
+    }
+  ],
+  "faultScenarios": [
+    {
+      "id": "P4F-001",
+      "scenario": "DPAPI Protect throws",
+      "expected": "no repository call; plaintext not logged"
+    },
+    {
+      "id": "P4F-002",
+      "scenario": "DPAPI Unprotect throws",
+      "expected": "typed unreadable record; no fallback"
+    },
+    {
+      "id": "P4F-003",
+      "scenario": "secret missing with existing DB",
+      "expected": "identity unavailable; no silent new key"
+    },
+    {
+      "id": "P4F-004",
+      "scenario": "secret corrupt",
+      "expected": "fail closed; no guessing"
+    },
+    {
+      "id": "P4F-005",
+      "scenario": "SQLite open fails",
+      "expected": "storage unavailable; bounded behavior"
+    },
+    {
+      "id": "P4F-006",
+      "scenario": "DB busy timeout",
+      "expected": "typed bounded failure"
+    },
+    {
+      "id": "P4F-007",
+      "scenario": "crash before commit",
+      "expected": "old complete state remains"
+    },
+    {
+      "id": "P4F-008",
+      "scenario": "crash after commit",
+      "expected": "new complete state available"
+    },
+    {
+      "id": "P4F-009",
+      "scenario": "late stale encrypted sequence",
+      "expected": "StaleIgnored"
+    },
+    {
+      "id": "P4F-010",
+      "scenario": "equal sequence contradictory record",
+      "expected": "typed conflict"
+    },
+    {
+      "id": "P4F-011",
+      "scenario": "corrupt DB",
+      "expected": "quarantine/fail closed; no salvage"
+    },
+    {
+      "id": "P4F-012",
+      "scenario": "unknown user_version",
+      "expected": "incompatible; no auto-drop"
+    },
+    {
+      "id": "P4F-013",
+      "scenario": "migration failure",
+      "expected": "transaction rollback / safe failure"
+    },
+    {
+      "id": "P4F-014",
+      "scenario": "disk full",
+      "expected": "old commit remains; no plaintext fallback"
+    },
+    {
+      "id": "P4F-015",
+      "scenario": "expiry deletion fails",
+      "expected": "expired stays hidden"
+    },
+    {
+      "id": "P4F-016",
+      "scenario": "500 updates",
+      "expected": "one logical row per DraftId"
+    },
+    {
+      "id": "P4F-017",
+      "scenario": "canary scan",
+      "expected": "zero durable plaintext canary"
+    },
+    {
+      "id": "P4F-018",
+      "scenario": "metadata list 100 rows",
+      "expected": "Unprotect count zero"
+    },
+    {
+      "id": "P4F-019",
+      "scenario": "discard all",
+      "expected": "decrypt count zero"
+    },
+    {
+      "id": "P4F-020",
+      "scenario": "kill during rollback-journal commit",
+      "expected": "valid recovered SQLite transaction state"
+    }
+  ]
+}

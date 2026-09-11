@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    {
+      "id": "p3-normal-textpattern",
+      "strategy": "TextPatternDocument",
+      "limit": 65536,
+      "input": "SYNTHETIC_DRAFT_ALPHA",
+      "expected": "Success"
+    },
+    {
+      "id": "p3-empty",
+      "strategy": "TextPatternDocument",
+      "limit": 65536,
+      "input": "",
+      "expected": "Empty"
+    },
+    {
+      "id": "p3-exact-whitespace",
+      "strategy": "TextPatternDocument",
+      "limit": 65536,
+      "input": "  A\\r\\nB  ",
+      "expected": "Success",
+      "mustRemainExact": true
+    },
+    {
+      "id": "p3-oversize-boundary",
+      "strategy": "TextPatternDocument",
+      "limit": 8,
+      "inputLength": 9,
+      "expected": "TooLarge"
+    },
+    {
+      "id": "p3-value-certified",
+      "strategy": "ValuePatternCertified",
+      "limit": 64,
+      "input": "value",
+      "expected": "Success"
+    }
+  ]
+}

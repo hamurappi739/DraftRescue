@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "phase": 2,
+  "requiredTests": [
+    "ARC-005",
+    "ARC-006",
+    "ARC-007",
+    "SEC-014",
+    "SEC-015",
+    "SEC-016",
+    "SEC-017",
+    "SEC-018",
+    "SEC-019",
+    "SEC-020",
+    "SEC-021",
+    "SEC-022",
+    "SEC-023",
+    "CAP-001",
+    "CAP-002",
+    "CAP-003",
+    "CAP-004",
+    "CAP-005",
+    "CAP-006",
+    "CAP-007",
+    "CAP-008",
+    "P2F-001",
+    "P2F-002",
+    "P2F-003",
+    "P2F-004",
+    "P2F-005",
+    "P2F-006"
+  ],
+  "mustRemainZero": {
+    "targetContentReadInvocations": 0,
+    "clipboardReadInvocations": 0,
+    "networkTextSendInvocations": 0
+  }
+}

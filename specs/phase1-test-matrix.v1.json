@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "tests": [
+    {
+      "id": "OBS-004",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-005",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-006",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-007",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-008",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-009",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "OBS-010",
+      "group": "observation",
+      "phase": 1
+    },
+    {
+      "id": "SEC-009",
+      "group": "security-boundary",
+      "phase": 1
+    },
+    {
+      "id": "SEC-010",
+      "group": "security-boundary",
+      "phase": 1
+    },
+    {
+      "id": "SEC-011",
+      "group": "security-boundary",
+      "phase": 2
+    },
+    {
+      "id": "SEC-012",
+      "group": "security-boundary",
+      "phase": 2
+    },
+    {
+      "id": "SEC-013",
+      "group": "security-boundary",
+      "phase": 2
+    },
+    {
+      "id": "PERF-004",
+      "group": "performance",
+      "phase": 1
+    },
+    {
+      "id": "PERF-005",
+      "group": "performance",
+      "phase": 1
+    },
+    {
+      "id": "PERF-006",
+      "group": "performance",
+      "phase": 1
+    },
+    {
+      "id": "PERF-007",
+      "group": "performance",
+      "phase": 1
+    },
+    {
+      "id": "FI-001",
+      "group": "fault",
+      "phase": 1
+    },
+    {
+      "id": "FI-002",
+      "group": "fault",
+      "phase": 1
+    },
+    {
+      "id": "FI-003",
+      "group": "fault",
+      "phase": 1
+    },
+    {
+      "id": "FI-004",
+      "group": "fault",
+      "phase": 1
+    },
+    {
+      "id": "EXP-001",
+      "group": "experiment",
+      "phase": 1
+    },
+    {
+      "id": "EXP-002",
+      "group": "experiment",
+      "phase": 1
+    },
+    {
+      "id": "CERT-001",
+      "group": "certification",
+      "phase": 1
+    },
+    {
+      "id": "CERT-002",
+      "group": "certification",
+      "phase": 1
+    }
+  ]
+}

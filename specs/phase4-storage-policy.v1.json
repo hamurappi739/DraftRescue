@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "journalMode": "DELETE",
+  "secureDelete": "ON",
+  "synchronous": "EXTRA",
+  "busyTimeoutMs": 1500,
+  "oneLogicalWriter": true,
+  "walAllowed": false,
+  "plaintextRepositoryAllowed": false,
+  "protectionScope": "CurrentUser",
+  "defaultProtectionVersion": 1,
+  "databaseUserVersion": 1
+}
