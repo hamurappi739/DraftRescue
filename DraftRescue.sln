@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Domain", "src\DraftRescue.Domain\DraftRescue.Domain.csproj", "{1FB2C860-7B5C-4298-AB1E-BB53010D0CBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Application", "src\DraftRescue.Application\DraftRescue.Application.csproj", "{A4743E95-7BEB-4D83-93E5-6F365BFB4097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Platform.Windows", "src\DraftRescue.Platform.Windows\DraftRescue.Platform.Windows.csproj", "{F302E04D-4C59-430B-A2E6-BE8B2A6F0FEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Infrastructure", "src\DraftRescue.Infrastructure\DraftRescue.Infrastructure.csproj", "{D5CFCAA5-A30F-4EF6-B10B-71CDEA0743D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Desktop", "src\DraftRescue.Desktop\DraftRescue.Desktop.csproj", "{EC98EB6D-9EDC-4A19-A7FD-1672D44FC9E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftRescue.Tests", "tests\DraftRescue.Tests\DraftRescue.Tests.csproj", "{E7A75BE9-7527-46DD-BA03-897C26B9BC1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FB2C860-7B5C-4298-AB1E-BB53010D0CBB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FB2C860-7B5C-4298-AB1E-BB53010D0CBB}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FB2C860-7B5C-4298-AB1E-BB53010D0CBB}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FB2C860-7B5C-4298-AB1E-BB53010D0CBB}.Release|x64.Build.0 = Release|Any CPU
+		{A4743E95-7BEB-4D83-93E5-6F365BFB4097}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A4743E95-7BEB-4D83-93E5-6F365BFB4097}.Debug|x64.Build.0 = Debug|Any CPU
+		{A4743E95-7BEB-4D83-93E5-6F365BFB4097}.Release|x64.ActiveCfg = Release|Any CPU
+		{A4743E95-7BEB-4D83-93E5-6F365BFB4097}.Release|x64.Build.0 = Release|Any CPU
+		{F302E04D-4C59-430B-A2E6-BE8B2A6F0FEB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F302E04D-4C59-430B-A2E6-BE8B2A6F0FEB}.Debug|x64.Build.0 = Debug|Any CPU
+		{F302E04D-4C59-430B-A2E6-BE8B2A6F0FEB}.Release|x64.ActiveCfg = Release|Any CPU
+		{F302E04D-4C59-430B-A2E6-BE8B2A6F0FEB}.Release|x64.Build.0 = Release|Any CPU
+		{D5CFCAA5-A30F-4EF6-B10B-71CDEA0743D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D5CFCAA5-A30F-4EF6-B10B-71CDEA0743D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{D5CFCAA5-A30F-4EF6-B10B-71CDEA0743D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{D5CFCAA5-A30F-4EF6-B10B-71CDEA0743D8}.Release|x64.Build.0 = Release|Any CPU
+		{EC98EB6D-9EDC-4A19-A7FD-1672D44FC9E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC98EB6D-9EDC-4A19-A7FD-1672D44FC9E5}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC98EB6D-9EDC-4A19-A7FD-1672D44FC9E5}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC98EB6D-9EDC-4A19-A7FD-1672D44FC9E5}.Release|x64.Build.0 = Release|Any CPU
+		{E7A75BE9-7527-46DD-BA03-897C26B9BC1E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E7A75BE9-7527-46DD-BA03-897C26B9BC1E}.Debug|x64.Build.0 = Debug|Any CPU
+		{E7A75BE9-7527-46DD-BA03-897C26B9BC1E}.Release|x64.ActiveCfg = Release|Any CPU
+		{E7A75BE9-7527-46DD-BA03-897C26B9BC1E}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C46E644E-FD59-4FC1-8319-EB54A3E4C573}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+You are taking over the DraftRescue project from a completed specification-first design phase.
+
+The attached repository/ZIP is the authoritative handoff package. Do not redesign the product from scratch and do not begin implementation until you have read CODEX_START_HERE.md completely.
+
+Then read, at minimum:
+- docs/DRAFTRESCUE_MASTER_CONTEXT.md
+- AGENTS.md
+- docs/CODEX_EXECUTION_GUIDE.md
+- docs/ADR_DECISION_SUMMARY_V1.md
+- docs/OPEN_DECISIONS.md
+- docs/IMPLEMENTATION_WORK_PACKAGES.md
+- docs/PHASE_ACCEPTANCE_GATES.md
+- docs/TEST_CASE_CATALOG.md
+- specs/test-catalog.v1.json
+
+Important reality: Phase 1 and Phase 2 are closed at their documented boundaries. Phase 3 WP-3.1, WP-3.2 and WP-3.4..WP-3.6 are implemented and tested: the bounded TextPattern reader, exact transient snapshots and current-state tracker exist. ValuePattern, integrated fault evidence, persistence and restore have NOT been implemented. Do not mistake specifications for completed code.
+
+Your first task is to continue the next bounded Phase 3 block on Windows x64 with .NET 8:
+1. read docs/PHASE3_PREIMPLEMENTATION_PACKAGE_INDEX.md and all documents it marks relevant;
+2. implement only WP-3.7 integrated fault/non-leakage evidence and WP-3.8 final Phase 3 review;
+3. preserve one-shot capability consumption, finite bounds, exact text and fail-closed errors;
+4. restore/build/test the whole solution and run the Phase 3 application boundary gate;
+5. report exact commands, results, files changed and remaining issues;
+6. STOP before Phase 4 unless explicitly told to continue.
+
+Work strictly one WP at a time from docs/IMPLEMENTATION_WORK_PACKAGES.md. Before each WP state docs read, files in scope, P-* invariants, C-* invariants, test IDs and out-of-scope items. After each WP report build/test results and stop before the next WP unless explicitly told to continue.
+
+Privacy is non-negotiable: DraftRescue must never become a keylogger; no full typing history, no passwords/PIN/credentials/banking fields, private browsing denied by default, no cloud/AI/network transmission of draft text, no draft contents in logs, no plaintext persistence, and uncertainty fails closed. Classification must occur before target-content reading. Restore uses separate fresh security/matching authority.
+
+Do not silently resolve items in docs/OPEN_DECISIONS.md. Use narrow experiments + ADRs + tests.
