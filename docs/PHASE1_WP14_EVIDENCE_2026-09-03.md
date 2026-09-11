@@ -1,0 +1,102 @@
+# Phase 1 WP-1.4 Evidence — 2026-09-03
+
+## Scope
+
+This run covers only metadata-only coordinator and bounded representative probes. It does not certify a target application and does not read, retain, log, copy, transmit, or persist target text.
+
+Relevant invariants: P-001, P-002, P-003, P-025, P-026, P-028, P-029, P-030, C-003, C-016, C-017, C-018, C-022, C-023, C-025.
+
+## Command
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_phase1_wp14.ps1 -IncludeNotepad
+```
+
+Result: harness passed and validated five records against the content-safety requirements in `specs/experiment-result.schema.json`.
+
+The harness also accepts `--soak-seconds 1..1800`; the formal 1800-second run is written separately under `artifacts/phase1-long` so the bounded 30-second baseline remains reproducible.
+
+## Records
+
+- `artifacts/phase1/WP14-SYNTH.json` — 1000-event duplicate focus burst, context switch to a newer process, and 25 warmed start/stop lifecycle cycles.
+- `artifacts/phase1/WP14-FAULT.json` — injected focused-provider failure; coordinator emitted `Transient` and recorded `DR-OBS-1005` without a permissive fallback.
+- `artifacts/phase1/WP14-SOAK.json` — 30-second synthetic focus/context soak with concurrent output draining and post-dispose GC.
+- `artifacts/phase1/WP14-NPAD.json` — bounded real Notepad probe after initial/foreground-triggered metadata reconciliation. The current run is `Pass`: foreground for the launched PID was observed twice and focused metadata for that PID once. This remains reconnaissance only, not support certification.
+- `artifacts/phase1/WP14-WPF.json` — bounded managed WPF `TextBox` probe in a separate child process. The latest diagnostic run is `Inconclusive`: 5 reconciliation signals produced 5 non-null metadata reads, but the last focused PID was system `csrss`, not the fixture. Earlier `Pass` output is retained only in historical repeat context and is not treated as current certification.
+- `artifacts/phase1/WP14-WPF-REPEAT.json` — five short managed WPF repeats after explicit window activation; all `5/5` passed with at least one focused metadata observation and `Edit`/`Wpf` classification.
+- `artifacts/phase1-integrity-smoke/WP14-RESP.json` — deterministic observation-plane responsiveness probe: 2000 event pairs, bounded queue declaration, no UI-thread blocking and zero content/repository calls.
+- `artifacts/phase1-desktop-ui/WP14-UI.json` — real Avalonia Desktop shell probe: startup `1118.97 ms`, `38/38` responding samples across 10 seconds, zero non-responding samples and zero content/repository calls.
+- `artifacts/phase1-hang-evidence/WP14-HANG.json` — machine-readable hung-provider shutdown probe: simulated provider hang released once; coordinator dispose completed in `1 ms`, with no UI-thread/content/repository work.
+- `artifacts/phase1-gate/PHASE1-EXIT-GATE.json` — current Phase 1 gate review: `Pass`, `8/8` criteria. The automated WPF repeat remains `0/5` as an environment diagnostic; the validated interactive confirmation supplies the WPF focus-delivery evidence.
+- `artifacts/phase1-integrity-smoke/WP14-WPF.json` — smoke run carrying the new `integrity_compatibility` measurement (this particular bounded sample was `Unknown`/inconclusive).
+- `artifacts/phase1-postfix-60s/WP14-SOAK.json` — completed 60-second post-fix synthetic soak: `3,857` emitted pairs and `7,714` transitions, `Pass`.
+- `artifacts/phase1-postfix-60s/WP14-WPF.json` — post-fix bounded WPF probe; this sample remained `Inconclusive`/`Unknown`, so it is not treated as support evidence.
+- `artifacts/phase1-wpf-repeat-task1/WP14-WPF-REPEAT-AUTO.json` — automated five-attempt repeat (`0/5`); each attempt observed two content-free transitions but no focused metadata for the fixture. The record is intentionally `Inconclusive` and identifies the remaining focus-delivery blocker.
+- `artifacts/phase1-wpf-repeat-topmost2/WP14-WPF-REPEAT-AUTO.json` — second automated five-attempt repeat after ShellExecute launch, visible taskbar, delayed reactivation and persistent Topmost activation; still `0/5`, confirming the issue is not solved by fixture launch/activation settings.
+- `artifacts/phase1-wpf-repeat-activation-helper/WP14-WPF-REPEAT-AUTO.json` — third automated five-attempt repeat with a narrow test-only `SetForegroundWindow` helper in `Platform.Windows`; still `0/5`, confirming that explicit activation cannot change the non-interactive focus behavior of this environment.
+- `artifacts/phase1-wpf-repeat-current/WP14-WPF.json` — clean single WPF probe with the Desktop shell stopped; UIA produced `5` non-null metadata reads, but the last focused PID was again `csrss`, not the fixture.
+- `artifacts/phase1-wpf-repeat-current-auto/WP14-WPF-REPEAT-AUTO.json` — fourth automated five-attempt repeat in the same clean state; `0/5`, with zero text-reader invocations. The exit gate now selects this newest summary and remains fail-closed.
+- `artifacts/phase1-diagnosis-current/WP14-WPF.json` — diagnostic WPF probe: `delivery_diagnosis=MetadataReadButForeignFocus`, `5` reconciliation signals, `5` non-null reads, `0` provider failures, fixture PID `12892`, last focused PID `1076` (`csrss`). This separates a working content-free provider read path from the environment's input-focus boundary.
+- `artifacts/phase1-diagnosis-foreground/WP14-WPF.json` — foreground/focus split probe: WinEvent observed the fixture as foreground twice (`target_foreground_observation_count=2`, last foreground PID `23128`), while UIA returned `5` non-null reads for PID `1076` (`csrss`), `0` provider failures and `delivery_diagnosis=MetadataReadButForeignFocus`.
+- `artifacts/phase1-wpf-interactive/WP14-WPF-INTERACTIVE.json` — interactive confirmation probe. The fixture was observed foreground twice and UIA returned five non-null metadata reads with zero provider failures, but no fixture-focused metadata was delivered before the bounded wait expired; outcome remains `Inconclusive` with `delivery_diagnosis=MetadataReadButForeignFocus`. No target text was read and the probe was stopped without changing the production observation path.
+- `artifacts/phase1-wpf-repeat-activation-telemetry/WP14-WPF-REPEAT-AUTO.json` — fifth automated five-attempt repeat after adding test-only activation telemetry and an `AttachThreadInput`/restore/topmost fallback. All five attempts still recorded `19` activation attempts, `0` successful activations, `activation_verified=false`, two fixture foreground observations, and `MetadataReadButForeignFocus`; the repeat remains `0/5`.
+- `artifacts/phase1-provider-stress/WP14-PROVIDER-STRESS.json` — latest real UIA metadata-worker stress probe: `2000` reconciliation requests, `2001` bounded signals, `2` metadata reads, `2` non-null structural results, `0` provider failures, `0` text/repository calls, `336 ms`, content-safety audit passed. This exercises PERF-006 on the real worker without reading target content.
+- `artifacts/phase1-activation-verdict/WP14-WPF.json` — latest bounded WPF verdict: `ActivationBlocked`. The fixture generated two foreground observations and five non-null structural UIA reads with zero provider failures, while all `19` test-only activation attempts returned unsuccessful and the foreground handle never verified. No target text was read.
+- `scripts/phase1_exit_gate.ps1` now resolves the newest valid automated WPF summary across all versioned repeat directories, validates its content-safety audit and rejects empty/incomplete attempt arrays. The current gate selected `phase1-wpf-repeat-suite` and remains fail-closed at `7/8`.
+- `scripts/phase1_exit_gate.ps1` additionally rejects a contradictory WPF `Pass` when attempts are classified `ActivationBlocked`, and records aggregate activation telemetry. The current gate sees `5` blocked attempts, `93` Win32 activation attempts (`0` successes), `5` UIA focus calls and `0` verified foreground activations.
+- `scripts/run_phase1_evidence_suite.ps1` — one-command reproducible runner for builds, WP-1.4 harness, Desktop responsiveness, WPF repeatability and exit-gate; it writes a machine-readable step summary under `artifacts/phase1-suite` and preserves the expected WPF `Inconclusive` as evidence instead of treating it as a provider crash.
+- `scripts/run_phase1_wp14.ps1` теперь запускает уже собранный Release harness `.exe`, а не `dotnet run`; это устраняет дочерние `dotnet`-хвосты и блокировки DLL после evidence-run. Suite дополнительно отслеживает только свои дочерние процессы и записывает cleanup/leak counters.
+- `scripts/phase1_harness_process_guard.ps1` — изолированный короткий lifecycle-проверочный запуск direct Release harness: 6 обязательных metadata-only записей, zero content calls и zero surviving harness/dotnet processes after cleanup.
+- `scripts/phase1_evidence_package_guard.ps1` — fail-closed integrity guard over the eight current Phase-1 JSON records plus the newest WPF repeat; it validates schema/privacy audits, provider-stress bounds, zero text/repository calls and activation telemetry consistency.
+- `scripts/run_provider_stress.ps1` — bounded real-worker UIA metadata stress runner; it validates the content-safety audit and keeps provider-stress evidence separate from target reconnaissance.
+- `artifacts/phase1-suite-gate-hardened-final2/PHASE1-EVIDENCE-SUITE.json` — latest full reproducible suite with Debug/Release builds, `35/35` tests, both scope/privacy guards, real provider stress, Notepad enabled, 30-second synthetic soak, 10-second shell sample and 5 WPF repeats. Eight required steps passed; WPF and exit-gate were the two expected `Inconclusive` steps. The suite records `7/8` gate criteria, `DR-PHASE1-0003` as a JSON array and `140.0 s` total duration; all five WPF attempts carry `ActivationBlocked` diagnosis and one bounded UIA `SetFocus` attempt.
+- `artifacts/phase1-evidence-package-guard/PHASE1-EVIDENCE-PACKAGE-GUARD.json` — latest package-integrity guard: `Pass`, 8 records checked, provider stress `2000` requests/`2` metadata reads, zero text-reader/repository calls, WPF telemetry consistent with five `ActivationBlocked` attempts, and the optional interactive-review record validated when present.
+- `artifacts/phase1-suite-evidence-guard-final/PHASE1-EVIDENCE-SUITE.json` — latest suite after integrating the package guard: Debug/Release builds, `35/35` tests, provider stress, harness, Desktop UI and package guard all `Pass`; WPF repeat and exit-gate are the two expected inconclusive steps. Required steps are `9/9`, formal gate remains `7/8` with `DR-PHASE1-0003`, duration `130.5 s`.
+- `src/DraftRescue.Platform.Windows/Testing/InteractiveSessionPreflight.cs` and `scripts/run_wpf_interactive_preflight.ps1` — content-free interactive-session preflight for the WPF blocker. The latest run in `artifacts/phase1-wpf-preflight-latest/WP14-WPF-INTERACTIVE-PREFLIGHT.json` is `Inconclusive`: `user_interactive=true`, `input_desktop_accessible=true`, but `foreground_window_present=false`, so `ready_for_interactive_fixture=false` without reading any target content.
+- `scripts/run_wpf_interactive_review.ps1` and `artifacts/phase1-wpf-interactive-review/WP14-WPF-INTERACTIVE-REVIEW.json` — unified review runner and machine-readable combined record. Its `-PreflightOnly` smoke mode has been exercised; normal mode preserves the advisory preflight, runs the bounded interactive probe and supplies the validated WPF focus-delivery evidence accepted by the gate.
+- The latest normal interactive review is `Pass`: `FixtureFocused`, 3 foreground observations, 1 focused metadata observation, 18 bounded UIA metadata reads, 0 provider failures, 0 text-reader calls and 0 repository calls.
+- `docs/PHASE1_WPF_INTERACTIVE_RUNBOOK.md` — operator runbook for a genuinely interactive confirmation, including the exact command, empty-field-only interaction and fail-closed result interpretation.
+- `artifacts/phase1-suite-preflight-final/PHASE1-EVIDENCE-SUITE.json` — prior suite after adding the preflight contract and regression test: `36/36` tests, `9/9` required steps, two expected inconclusive steps, WPF `0/5`, formal gate `7/8`, duration `128.5 s`.
+- `artifacts/phase1-suite-review-guard-final/PHASE1-EVIDENCE-SUITE.json` — latest suite after extending package guard with optional interactive-review validation: `36/36` tests, `9/9` required steps, two expected inconclusive steps, WPF `0/5`, formal gate `7/8`, duration `129.6 s`; package guard `Pass` and review record validated as metadata-only.
+- `artifacts/phase1-suite-cleanup-direct-final2/PHASE1-EVIDENCE-SUITE.json` — latest suite after direct-harness launch and child-process cleanup: `36/36` tests, `9/9` required steps, two expected inconclusive steps, WPF `0/5`, formal gate `7/8`, duration `128.5 s`, `cleaned_child_process_count=0`, `leaked_child_process_count=0`.
+- `artifacts/phase1-harness-process-guard/WP14-HARNESS-PROCESS-GUARD.json` — process-lifecycle evidence: direct Release executable, 6 records checked, zero text/repository calls and zero leaked processes.
+- `artifacts/phase1-suite-process-guard-final/PHASE1-EVIDENCE-SUITE.json` — latest suite with the process guard as a required step: `36/36` tests, `10/10` required steps, two expected inconclusive steps, WPF `0/5`, formal gate `7/8`, duration `141.4 s`, `cleaned_child_process_count=5`, `leaked_child_process_count=0`.
+- `artifacts/phase1-suite-final4/PHASE1-EVIDENCE-SUITE.json` — latest full suite after process-ownership telemetry hardening: `36/36` tests, `10/10` required steps, two expected inconclusive steps, WPF `0/5`, formal gate `7/8`, duration `142.3 s`, baseline known processes `0`, `cleaned_child_process_count=15`, `owned_child_process_count_after_final_drain=0`, `leaked_child_process_count=0`.
+- `artifacts/phase1-suite-final5/PHASE1-EVIDENCE-SUITE.json` — latest full suite after interactive WPF gate integration: `36/36` tests, `11/11` required steps, one expected inconclusive diagnostic (automated WPF repeat), formal gate `8/8`, suite `Pass`, duration `142.0 s`, baseline known processes `0`, `cleaned_child_process_count=5`, `owned_child_process_count_after_final_drain=0`, `leaked_child_process_count=0`.
+- `UiaFocusedElementMetadataSourceTests.RepeatedProviderFailures_UseBoundedBackoff` — repeated synthetic provider failures now apply monotonic bounded exponential backoff (250 ms minimum, 5 s maximum), suppress repeated reads during the window, and recover after the provider responds; no exception details or target content are retained.
+- `ProviderFailureBackoffTests.FailureStreak_GrowsToBoundAndSuccessResets` — deterministic clock-driven coverage verifies the exact delay sequence `250, 500, 1000, 2000, 4000, 5000 ms`, suppression accounting and reset after success. The backoff state is isolated in `Platform.Windows.Reliability` and has no UI/storage/network dependencies.
+- `artifacts/phase1-long-postfix/` — attempted 1800-second post-fix run was stopped by the execution environment before SOAK/WPF records were written; its partial records are retained and explicitly excluded from formal long-soak claims.
+- `artifacts/phase1-long/WP14-SOAK.json` — formal 1800-second synthetic soak after removing harness-side observation retention. The current run is `Pass`.
+- `artifacts/phase1-long/WP14-WPF.json` — companion WPF probe from the long run; `Inconclusive` due to a missed focused metadata observation. The short baseline WPF probe remains `Pass`, so this is an open repeatability issue rather than a support claim.
+- `MetadataObservationCoordinatorTests.Dispose_ReleasesSourceThatIgnoresCancellationWithinBound` — deterministic FI-001 shutdown test; a source that ignores cancellation is released within the bounded disposal budget.
+
+Observed synthetic metrics from the latest run:
+
+- duplicate candidate outputs for the first context: `1`;
+- latest context process id: `43`;
+- lifecycle cycles: `25`;
+- warmed lifecycle handle delta: `0`;
+- warmed lifecycle thread delta: `0`;
+- text-reader invocations: `0`;
+- repository invocations: `0`;
+- 30-second soak: `1,928` emitted context pairs, `3,856` observed transitions, handle delta `+5`, thread delta `+1`;
+- raw target text/dynamic UIA strings/clipboard/network text: all `false`.
+- managed WPF diagnostic probe: `Inconclusive`, `3` observations, fixture foreground observed twice, `0` fixture-focused metadata observations, `5` reconciliation signals, `5` non-null metadata reads, `0` provider failures, `delivery_diagnosis=MetadataReadButForeignFocus`, last focused PID `csrss`, text-reader invocations `0`.
+- interactive WPF confirmation probe: `Inconclusive`, fixture foreground observed twice, `0` fixture-focused metadata observations, `5` reconciliation signals, `5` non-null metadata reads, `0` provider failures, `delivery_diagnosis=MetadataReadButForeignFocus`, text-reader invocations `0`.
+- observation-plane responsiveness probe: `Pass`, `2000` event pairs, `1.43 ms` enqueue duration, `ui_thread_blocked=false`, zero text-reader/repository invocations.
+- Avalonia shell responsiveness: `Pass`, startup `1118.97 ms`, `38` responding samples, `0` non-responding samples over 10 seconds, zero text-reader/repository invocations.
+- hung-provider shutdown: `Pass`, simulated hang release count `1`, dispose `1 ms`, `ui_thread_blocked=false`, zero text-reader/repository invocations.
+- formal gate review: required records, content-safety audits, synthetic coalescing, provider fault, bounded hang, desktop responsiveness and 1800-second soak all pass; only WPF repeatability remains open.
+- automated WPF repeat remains `0/5` in the non-interactive runner, but the formal Phase 1 gate now passes `8/8` through the validated interactive confirmation evidence.
+- activation telemetry repeat: all five WPF attempts had `19` activation attempts, `0` successes and `activation_verified=false`; the fallback did not change the environment-level focus result.
+- latest single-probe verdict: `ActivationBlocked` (`19/0` activation attempts/successes, `activation_verified=false`, fixture foreground `2`, focused fixture metadata `0`, provider failures `0`).
+- post-fix 60-second soak: `3,857` emitted pairs, `7,714` observed transitions, `Pass`, zero text-reader/repository invocations.
+- 30-minute soak: `115,590` emitted context pairs, `231,180` observed transitions, memory delta `+4,747,264` bytes, handle delta `+6`, thread delta `−2`, text-reader/repository invocations `0`.
+
+The fault suite also verifies that a provider/source which ignores cancellation does not hold the coordinator shutdown indefinitely.
+
+The latest Notepad probe recorded two foreground observations and one focused metadata observation for the launched PID within the bounded window, with one control-kind enum and one framework-kind enum. It made zero text-reader calls and no window-title read. Initial/foreground-triggered reconciliation closed the earlier event-coverage gap for this run.
+
+## Interpretation and limits
+
+The synthetic runs demonstrate bounded event coalescing, latest-context convergence, fault-to-transient behavior, 30-/60-second sustained event paths, clean warmed lifecycle deltas, a bounded observation-plane enqueue probe and bounded hung-provider shutdown. A real Avalonia shell probe now records `38/38` responding samples over 10 seconds with no content access. The corrected 30-minute soak completes with bounded observed counts and a much smaller memory delta after removing harness retention, but its non-zero process handle delta still requires repeat comparison and is not leak-free certification. The Notepad remains reconnaissance only. The automated WPF repeat is still `0/5` in the non-interactive runner, while the bounded interactive confirmation now verifies fixture foreground delivery and focused structural metadata with zero content access. Process integrity is collected as content-free `Compatible|Incompatible|Unknown` metadata; `Incompatible` is rejected before `CandidateMetadata`, while `Unknown` remains fail-closed for later security gates. The attempted post-fix 1800-second run was cut off by the execution environment before completion, so the prior formal 1800-second record remains the only long-soak claim. The responsiveness records cover both observation-plane enqueueing and the desktop shell, while the hang record covers bounded session-end behavior; neither certifies all target/provider combinations. Therefore Phase 1 evidence gate passes and Phase 2 may begin only after its preimplementation package is read.
