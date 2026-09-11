@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DraftRescue.Phase1Harness</RootNamespace>
+    <AssemblyName>DraftRescue.Phase1Harness</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DraftRescue.Application\DraftRescue.Application.csproj" />
+    <ProjectReference Include="..\..\src\DraftRescue.Platform.Windows\DraftRescue.Platform.Windows.csproj" />
+  </ItemGroup>
+</Project>
