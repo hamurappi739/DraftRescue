@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DraftRescue.Application</RootNamespace>
+    <AssemblyName>DraftRescue.Application</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DraftRescue.Domain\DraftRescue.Domain.csproj" />
+  </ItemGroup>
+</Project>
