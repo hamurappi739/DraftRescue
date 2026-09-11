@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RootNamespace>DraftRescue.Desktop</RootNamespace>
+    <AssemblyName>DraftRescue.Desktop</AssemblyName>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DraftRescue.Application\DraftRescue.Application.csproj" />
+    <ProjectReference Include="..\DraftRescue.Infrastructure\DraftRescue.Infrastructure.csproj" />
+    <ProjectReference Include="..\DraftRescue.Platform.Windows\DraftRescue.Platform.Windows.csproj" />
+  </ItemGroup>
+</Project>
