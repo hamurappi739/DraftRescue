@@ -1,0 +1,18 @@
+# Phase 3 Invariant → Test Traceability
+
+| Invariant | Primary tests |
+|---|---|
+| P-037 | READ-001, READ-002, CAP-001 |
+| P-038 | READ-005, READ-006, P3F-005 |
+| P-039 | READ-010, P3F-008 |
+| P-040 | READ-007, ARC-014 |
+| P-041 | SNAP-003, SNAP-004, P3F-009 |
+| P-042 | READ-011, READ-012 |
+| C-033 | READ-001, READ-002 |
+| C-034 | READ-003, READ-004 |
+| C-035 | READ-005, READ-006 |
+| C-036 | SNAP-005, P3F-006 |
+| C-037 | SNAP-003, SNAP-004 |
+| C-038 | SNAP-001, SNAP-002 |
+| C-039 | READ-009, SNAP-007 |
+| C-040 | READ-010, SNAP-008 |
