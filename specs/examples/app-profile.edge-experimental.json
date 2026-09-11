@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "profileId": "browser.edge.experimental",
+  "profileVersion": 1,
+  "displayName": "Microsoft Edge (experimental)",
+  "supportLevel": "experimental",
+  "applicationMatch": {
+    "executableNames": ["msedge.exe"],
+    "browserFamily": "chromium"
+  },
+  "frameworkHints": ["chromium"],
+  "capturePolicy": "appSpecificAdapter",
+  "browserPolicy": {
+    "privateModeHandling": "deny",
+    "privateModeDetectorId": "edge-inprivate-v1-experiment",
+    "allowOriginFingerprinting": true
+  },
+  "completionPolicy": {
+    "focusLossIsCompletion": false,
+    "detectorId": null
+  },
+  "recoveryPolicy": {
+    "requiredStrongAnchors": ["application", "fieldIdentity", "browserOrigin"],
+    "optionalAnchors": ["windowContext", "geometry", "appSpecific"],
+    "fatalConflicts": ["application", "securityState", "browserOrigin", "fieldIdentity"]
+  },
+  "restorePolicy": "copyOnly",
+  "knownLimitations": [
+    "InPrivate detection must be proven fail-closed for the exact supported Edge range before normal support.",
+    "Generic web-page submission semantics are intentionally conservative.",
+    "Direct Restore is disabled in this placeholder profile."
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "profileId": "fixture.standard-edit.supported",
+  "profileVersion": 1,
+  "displayName": "Synthetic Standard Edit Fixture",
+  "supportLevel": "supported",
+  "applicationMatch": {
+    "executableNames": [
+      "draftrescue-fixture-app.exe"
+    ],
+    "browserFamily": "none"
+  },
+  "frameworkHints": [
+    "win32"
+  ],
+  "capturePolicy": "genericUiaValue",
+  "completionPolicy": {
+    "focusLossIsCompletion": false,
+    "detectorId": "fixture-completion-v1"
+  },
+  "recoveryPolicy": {
+    "requiredStrongAnchors": [
+      "application",
+      "fieldIdentity"
+    ],
+    "optionalAnchors": [
+      "windowContext",
+      "geometry"
+    ],
+    "fatalConflicts": [
+      "application",
+      "securityState",
+      "fieldIdentity"
+    ]
+  },
+  "restorePolicy": "valuePattern",
+  "targetCompatibility": {
+    "versionScheme": "windowsFileVersion",
+    "certifiedRanges": [
+      {
+        "minInclusive": "1.0.0.0",
+        "maxInclusive": "1.0.99.999"
+      }
+    ],
+    "blockedRanges": []
+  },
+  "knownLimitations": [
+    "Synthetic test fixture only; not a real application support declaration."
+  ]
+}

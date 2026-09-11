@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "draftId": "11111111-2222-3333-4444-555555555555",
+  "applicationId": "fixture.standard-edit",
+  "appProfileId": "fixture.standard-edit.supported",
+  "appProfileVersion": 1,
+  "snapshotSequence": 42,
+  "fingerprintVersion": 1,
+  "matchMetadataVersion": 1,
+  "matchMetadataBase64": "AQIDBA==",
+  "protectedPayloadBase64": "BQYHCA==",
+  "protectionVersion": 1,
+  "createdAtUtc": "2026-08-31T00:00:00Z",
+  "updatedAtUtc": "2026-08-31T00:01:00Z",
+  "expiresAtUtc": "2026-08-31T00:31:00Z",
+  "recoverableState": "recoverable",
+  "presentationKind": "genericText"
+}

@@ -1,0 +1,9 @@
+{
+  "contextGeneration": 7,
+  "snapshotSequence": 12,
+  "profileId": "synthetic.native.text.v1",
+  "readStrategy": "TextPatternDocument",
+  "text": "SYNTHETIC_DRAFT_ALPHA",
+  "textLengthUtf16": 21,
+  "isEmpty": false
+}

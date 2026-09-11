@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "profileId": "example.text-editor",
+  "profileVersion": 1,
+  "displayName": "Example Text Editor",
+  "supportLevel": "experimental",
+  "applicationMatch": {
+    "executableNames": ["example.exe"],
+    "browserFamily": "none"
+  },
+  "frameworkHints": ["unknown"],
+  "capturePolicy": "genericUiaValue",
+  "completionPolicy": {
+    "focusLossIsCompletion": false,
+    "detectorId": null
+  },
+  "recoveryPolicy": {
+    "requiredStrongAnchors": ["application", "fieldIdentity"],
+    "optionalAnchors": ["windowContext", "geometry"],
+    "fatalConflicts": ["application", "securityState", "fieldIdentity"]
+  },
+  "restorePolicy": "copyOnly",
+  "knownLimitations": [
+    "Template only. Must not be shipped as a real profile."
+  ]
+}

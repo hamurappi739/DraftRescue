@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "contextGeneration": 12,
+  "observationSequence": 44,
+  "application": {
+    "family": "SyntheticHarness",
+    "version": "1.0.0"
+  },
+  "controlKind": "Edit",
+  "frameworkKind": "Win32",
+  "isPassword": "False",
+  "isEnabled": "True",
+  "isKeyboardFocusable": "True",
+  "hasKeyboardFocus": "True",
+  "isOffscreen": "False",
+  "providerHealth": "Healthy",
+  "capabilityHints": [
+    "ValuePatternAvailable"
+  ],
+  "integrityCompatibility": "Compatible"
+}

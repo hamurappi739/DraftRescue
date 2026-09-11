@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "draftId": "7e5e5c3b-8f85-4ef0-8f4a-8fbf93d693fa",
+  "applicationId": "synthetic.test.host",
+  "appProfileId": "synthetic.safe.editor",
+  "fingerprintVersion": 1,
+  "matchMetadataBase64": "AQIDBA==",
+  "protectedPayloadBase64": "AAECAwQFBgcICQ==",
+  "protectionVersion": 1,
+  "createdAtUtc": "2026-09-02T00:00:00Z",
+  "updatedAtUtc": "2026-09-02T00:00:10Z",
+  "expiresAtUtc": "2026-09-02T00:30:10Z",
+  "recoverableState": "recoverable",
+  "snapshotSequence": 42,
+  "appProfileVersion": 1,
+  "matchMetadataVersion": 1,
+  "presentationKind": "genericText"
+}

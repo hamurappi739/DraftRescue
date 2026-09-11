@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "P1-E1",
+  "runId": "synthetic-example-001",
+  "scenarioId": "OBS-004",
+  "outcome": "Pass",
+  "durationMs": 1250,
+  "failureCodes": [],
+  "invariantIds": [
+    "P-025",
+    "P-028",
+    "C-018"
+  ],
+  "testIds": [
+    "OBS-004",
+    "EXP-002"
+  ],
+  "measurements": {
+    "eventCount": 12,
+    "maxQueueDepth": 2,
+    "callbackP99Ms": 0.4
+  },
+  "contentSafetyAudit": {
+    "rawTargetTextCaptured": false,
+    "rawDynamicUiaStringsLogged": false,
+    "clipboardRead": false,
+    "clipboardWritten": false,
+    "networkTextSent": false,
+    "testDataClass": "Synthetic"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "profileId": "browser.chrome.experimental",
+  "profileVersion": 1,
+  "displayName": "Google Chrome (experimental)",
+  "supportLevel": "experimental",
+  "applicationMatch": {
+    "executableNames": ["chrome.exe"],
+    "browserFamily": "chromium"
+  },
+  "frameworkHints": ["chromium"],
+  "capturePolicy": "appSpecificAdapter",
+  "browserPolicy": {
+    "privateModeHandling": "deny",
+    "privateModeDetectorId": "chrome-private-mode-v1-experiment",
+    "allowOriginFingerprinting": true
+  },
+  "completionPolicy": {
+    "focusLossIsCompletion": false,
+    "detectorId": null
+  },
+  "recoveryPolicy": {
+    "requiredStrongAnchors": ["application", "fieldIdentity", "browserOrigin"],
+    "optionalAnchors": ["windowContext", "geometry", "appSpecific"],
+    "fatalConflicts": ["application", "securityState", "browserOrigin", "fieldIdentity"]
+  },
+  "restorePolicy": "copyOnly",
+  "knownLimitations": [
+    "Private-mode detection must be proven fail-closed for the exact supported Chrome range before normal support.",
+    "Generic web-page submission semantics are intentionally conservative.",
+    "Direct Restore is disabled in this placeholder profile."
+  ]
+}

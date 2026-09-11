@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "profileId": "windows.notepad.experimental",
+  "profileVersion": 1,
+  "displayName": "Windows Notepad (experimental)",
+  "supportLevel": "experimental",
+  "applicationMatch": {
+    "executableNames": ["notepad.exe"],
+    "browserFamily": "none"
+  },
+  "frameworkHints": ["win32", "winui", "unknown"],
+  "capturePolicy": "appSpecificAdapter",
+  "completionPolicy": {
+    "focusLossIsCompletion": false,
+    "detectorId": null
+  },
+  "recoveryPolicy": {
+    "requiredStrongAnchors": ["application", "fieldIdentity"],
+    "optionalAnchors": ["windowContext", "geometry", "appSpecific"],
+    "fatalConflicts": ["application", "securityState", "fieldIdentity"]
+  },
+  "restorePolicy": "appSpecificAdapter",
+  "knownLimitations": [
+    "Durable save detection is not yet certified.",
+    "Exact control family differs across Windows Notepad versions and must be measured before supportLevel becomes supported."
+  ]
+}

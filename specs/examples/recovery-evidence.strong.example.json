@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "applicationMatch": true,
+  "profileCompatibility": "compatible",
+  "securityState": "allowed",
+  "identityAnchors": [
+    "fieldIdentity"
+  ],
+  "corroborators": [
+    "windowContext"
+  ],
+  "fatalConflicts": [],
+  "candidateCountSatisfyingPredicate": 1
+}
