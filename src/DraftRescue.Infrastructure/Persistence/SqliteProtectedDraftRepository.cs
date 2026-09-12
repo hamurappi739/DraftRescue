@@ -94,10 +94,10 @@ ORDER BY updated_at_utc_ms DESC;
                     result.Add(new RecoverableDraftMetadata(
                         new DraftId(new Guid((byte[])reader[0])),
                         reader.GetString(1),
-                        (DraftPresentationKind)reader.GetInt32(2),
+                        ReadPresentationKind(reader.GetInt32(2)),
                         FromUnixMilliseconds(reader.GetInt64(3)),
                         FromUnixMilliseconds(reader.GetInt64(4)),
-                        (RecoverableState)reader.GetInt32(5)));
+                        ReadRecoverableState(reader.GetInt32(5))));
                 }
                 catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or InvalidCastException or FormatException or OverflowException)
                 {
@@ -195,9 +195,9 @@ FROM drafts WHERE draft_id = $id;
             var payload = ProtectedDraftPayload.Create(reader.GetInt32(10), (byte[])reader[9]);
             return ProtectedDraftRecordV1.Create(
                 new DraftId(new Guid((byte[])reader[0])), reader.GetString(2), reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.IsDBNull(4) ? null : reader.GetInt32(4), (DraftPresentationKind)reader.GetInt32(5), reader.GetInt32(6),
+                reader.IsDBNull(4) ? null : reader.GetInt32(4), ReadPresentationKind(reader.GetInt32(5)), reader.GetInt32(6),
                 reader.GetInt32(7), (byte[])reader[8], payload, reader.GetInt64(11), FromUnixMilliseconds(reader.GetInt64(12)),
-                FromUnixMilliseconds(reader.GetInt64(13)), FromUnixMilliseconds(reader.GetInt64(14)), (RecoverableState)reader.GetInt32(15));
+                FromUnixMilliseconds(reader.GetInt64(13)), FromUnixMilliseconds(reader.GetInt64(14)), ReadRecoverableState(reader.GetInt32(15)));
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or InvalidCastException or FormatException or OverflowException)
         {
@@ -258,4 +258,14 @@ UPDATE drafts SET application_id=$app, app_profile_id=$profile, app_profile_vers
 
     private static long ToUnixMilliseconds(DateTimeOffset value) => value.ToUniversalTime().ToUnixTimeMilliseconds();
     private static DateTimeOffset FromUnixMilliseconds(long value) => DateTimeOffset.FromUnixTimeMilliseconds(value);
+
+    private static DraftPresentationKind ReadPresentationKind(int value) =>
+        Enum.IsDefined((DraftPresentationKind)value)
+            ? (DraftPresentationKind)value
+            : throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown presentation kind.");
+
+    private static RecoverableState ReadRecoverableState(int value) =>
+        Enum.IsDefined((RecoverableState)value)
+            ? (RecoverableState)value
+            : throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown recoverable state.");
 }
