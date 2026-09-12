@@ -19,7 +19,7 @@ If steps 2–4 fail, the partial runtime is disposed, the database is not create
 ## Evidence
 
 - Full solution build: 0 warnings, 0 errors.
-- Full test suite: **180/180** passed.
+- Full test suite: **181/181** passed.
 - Startup tests cover successful composition, corrupt-store preservation, and a failed protection store that stops before database creation.
 - Existing DPAPI, secret-store, SQLite, retention, recovery, and plaintext-at-rest tests remain green.
 
