@@ -41,6 +41,27 @@ public sealed class Phase4DpapiTests
     }
 
     [Fact]
+    public void ProtectionFailureReasonClassificationIsStructuralAndContentFree()
+    {
+        Assert.Equal(DraftProtectionFailureReason.PlatformNotSupported,
+            DraftProtectionException.Classify(new PlatformNotSupportedException()));
+        Assert.Equal(DraftProtectionFailureReason.Unauthorized,
+            DraftProtectionException.Classify(new UnauthorizedAccessException()));
+        Assert.Equal(DraftProtectionFailureReason.Cryptographic,
+            DraftProtectionException.Classify(new CryptographicException()));
+        Assert.Equal(DraftProtectionFailureReason.Unknown,
+            DraftProtectionException.Classify(new InvalidOperationException()));
+        Assert.Throws<ArgumentNullException>(() => DraftProtectionException.Classify(null!));
+
+        var error = new DraftProtectionException(
+            DraftProtectionFailureCode.DpapiFailure,
+            reason: DraftProtectionFailureReason.Cryptographic);
+        Assert.Equal(DraftProtectionFailureCode.DpapiFailure, error.Code);
+        Assert.Equal(DraftProtectionFailureReason.Cryptographic, error.Reason);
+        Assert.Equal(nameof(DraftProtectionFailureCode.DpapiFailure), error.Message);
+    }
+
+    [Fact]
     public void DpapiProtectorRoundTripsExactTextWithoutFallback()
     {
         var protector = new WindowsDpapiDraftProtector();
