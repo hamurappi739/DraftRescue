@@ -16,6 +16,7 @@ $record = [ordered]@{
     available = $false
     failureCode = $null
     failureReason = 'Unknown'
+    failureStage = 'Unknown'
     probeExitCode = $null
     harnessExitCode = 0
     executionStatus = 'NotStarted'
@@ -38,12 +39,15 @@ try {
     if ($record.available) {
         $record.failureCode = 'None'
         $record.failureReason = 'None'
+        $record.failureStage = 'None'
         $record.executionStatus = 'ProbePass'
     }
     else {
         $record.failureCode = if ($LASTEXITCODE -eq 6) { 'DpapiFailure' } elseif ($LASTEXITCODE -eq 2) { 'ProbeArgumentOrStartupFailure' } else { 'DpapiProbeUnexpectedExit' }
         $reasonMatch = [regex]::Match(($probeOutput -join "`n"), '(?m)^failureReason=(PlatformNotSupported|Unauthorized|Cryptographic|Unknown)$')
         if ($reasonMatch.Success) { $record.failureReason = $reasonMatch.Groups[1].Value }
+        $stageMatch = [regex]::Match(($probeOutput -join "`n"), '(?m)^failureStage=(Protect|Unprotect|Validation|Unknown)$')
+        if ($stageMatch.Success) { $record.failureStage = $stageMatch.Groups[1].Value }
         $record.executionStatus = if ($LASTEXITCODE -eq 6) { 'ProbeCompletedDpapiUnavailable' } else { 'ProbeCompletedUnexpectedly' }
     }
 }
