@@ -48,6 +48,8 @@ public static class SqliteStoreBootstrapper
                 throw new SqliteStoreException(SqliteStoreFailureCode.IncompatibleSchema);
             }
 
+            ValidateSchemaV1(connection);
+
             return connection;
         }
         catch (SqliteStoreException)
@@ -75,5 +77,52 @@ public static class SqliteStoreBootstrapper
         command.CommandText = sql;
         command.Transaction = transaction;
         command.ExecuteNonQuery();
+    }
+
+    private static void ValidateSchemaV1(SqliteConnection connection)
+    {
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA table_info('drafts');";
+        using var reader = command.ExecuteReader();
+        var columns = new Dictionary<string, (string Type, bool NotNull, int PrimaryKey)>(StringComparer.OrdinalIgnoreCase);
+        while (reader.Read())
+        {
+            columns[reader.GetString(1)] = (reader.GetString(2), reader.GetInt32(3) != 0, reader.GetInt32(5));
+        }
+
+        var expected = new (string Name, string Type, bool NotNull, int PrimaryKey)[]
+        {
+            ("draft_id", "BLOB", true, 1),
+            ("record_schema_version", "INTEGER", true, 0),
+            ("application_id", "TEXT", true, 0),
+            ("app_profile_id", "TEXT", false, 0),
+            ("app_profile_version", "INTEGER", false, 0),
+            ("presentation_kind", "INTEGER", true, 0),
+            ("fingerprint_version", "INTEGER", true, 0),
+            ("match_metadata_version", "INTEGER", true, 0),
+            ("match_metadata", "BLOB", true, 0),
+            ("protected_payload", "BLOB", true, 0),
+            ("protection_version", "INTEGER", true, 0),
+            ("snapshot_sequence", "INTEGER", true, 0),
+            ("created_at_utc_ms", "INTEGER", true, 0),
+            ("updated_at_utc_ms", "INTEGER", true, 0),
+            ("expires_at_utc_ms", "INTEGER", true, 0),
+            ("recoverable_state", "INTEGER", true, 0)
+        };
+
+        if (columns.Count != expected.Length || expected.Any(column =>
+                !columns.TryGetValue(column.Name, out var actual) ||
+                !string.Equals(actual.Type, column.Type, StringComparison.OrdinalIgnoreCase) ||
+                actual.NotNull != column.NotNull ||
+                actual.PrimaryKey != column.PrimaryKey))
+        {
+            throw new SqliteStoreException(SqliteStoreFailureCode.CorruptRecord);
+        }
+
+        using var sqlCommand = connection.CreateCommand();
+        sqlCommand.CommandText = "SELECT sql FROM sqlite_master WHERE type='table' AND name='drafts';";
+        var tableSql = Convert.ToString(sqlCommand.ExecuteScalar());
+        if (string.IsNullOrWhiteSpace(tableSql) || !tableSql.Contains("WITHOUT ROWID", StringComparison.OrdinalIgnoreCase))
+            throw new SqliteStoreException(SqliteStoreFailureCode.CorruptRecord);
     }
 }
