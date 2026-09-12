@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$env:MSBUILDDISABLENODEREUSE = '1'
 $runnerStart = Get-Date
 $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -172,6 +173,8 @@ $record = [ordered]@{
     dpapiInstallationSecretRoundTripObserved = $(if ($null -ne $probe -and $null -ne $probe.installationSecretRoundTripObserved) { [bool]$probe.installationSecretRoundTripObserved } else { $false })
     dpapiFailureReason = $(if ($null -ne $probe -and $null -ne $probe.failureReason) { [string]$probe.failureReason } else { $null })
     dpapiFailureStage = $(if ($null -ne $probe -and $null -ne $probe.failureStage) { [string]$probe.failureStage } else { $null })
+    dpapiReadinessStatus = $(if ($null -ne $probe -and $null -ne $probe.readiness) { [string]$probe.readiness.status } else { $null })
+    dpapiReadinessBlockers = $(if ($null -ne $probe -and $null -ne $probe.readiness) { @($probe.readiness.blockers) } else { @('dpapi-runtime-evidence-missing') })
     processKillProbeExitCode = $killProbeExit
     targetEnvironmentProbeExitCode = $environmentProbeExit
     targetEnvironmentProfileLoadState = $(if ($null -ne $environmentProbe -and $null -ne $environmentProbe.profile) { [string]$environmentProbe.profile.loadState } else { $null })

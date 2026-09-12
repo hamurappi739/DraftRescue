@@ -4,6 +4,10 @@ function Invoke-Phase4TestSuite {
         [string]$ProjectPath
     )
 
+    # Keep the test runner scoped to this invocation. Without this setting
+    # MSBuild may leave windowless dotnet nodes alive and contaminate the next
+    # certification baseline.
+    $env:MSBUILDDISABLENODEREUSE = '1'
     $runStart = Get-Date
     $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
     $previousLanguage = $env:DOTNET_CLI_UI_LANGUAGE
