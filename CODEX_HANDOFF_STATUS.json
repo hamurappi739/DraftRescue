@@ -304,6 +304,12 @@
     "dpapiRuntimeProbeSchemaVersion": 3,
     "dpapiPayloadRoundTripObserved": false,
     "dpapiInstallationSecretRoundTripObserved": false,
+    "dpapiRuntimeReadinessStatus": "PendingTargetCertification",
+    "dpapiRuntimeReadinessBlockers": [
+      "profile-state-query-unavailable",
+      "dpapi-payload-roundtrip-missing",
+      "dpapi-installation-secret-roundtrip-missing"
+    ],
     "processKillProbeArtifact": "artifacts/phase4-exit-gate/PHASE4-PROCESS-KILL-PROBE.json",
     "processKillProbeExitCode": 0,
     "processKillRollbackPreservedOldRow": true,
