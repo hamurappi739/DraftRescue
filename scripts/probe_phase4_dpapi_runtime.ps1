@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$env:MSBUILDDISABLENODEREUSE = '1'
 $outputPath = Join-Path $RepositoryRoot $OutputDirectory
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
 $project = Join-Path $RepositoryRoot 'experiments\DraftRescue.Phase4CrashProbe\DraftRescue.Phase4CrashProbe.csproj'
@@ -23,6 +24,11 @@ $record = [ordered]@{
     harnessExitCode = 0
     executionStatus = 'NotStarted'
     environment = $null
+    readiness = [ordered]@{
+        status = 'Unknown'
+        blockers = @()
+        nextAction = 'Collect target environment evidence and rerun the probe'
+    }
     containsSecrets = $false
 }
 try {
@@ -75,6 +81,26 @@ if (Test-Path -LiteralPath $environmentPath) {
             $record.executionStatus = 'EvidenceInvalid'
         }
     }
+}
+$readinessBlockers = [System.Collections.Generic.List[string]]::new()
+if ($null -eq $record.environment) {
+    $readinessBlockers.Add('environment-evidence-missing')
+}
+else {
+    if (-not [bool]$record.environment.windows) { $readinessBlockers.Add('windows-target-required') }
+    if (-not [bool]$record.environment.userProfileAvailable) { $readinessBlockers.Add('user-profile-required') }
+    if ($null -eq $record.environment.session -or -not [bool]$record.environment.session.interactive) { $readinessBlockers.Add('interactive-user-session-required') }
+    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.appDataPresent) { $readinessBlockers.Add('appdata-directory-required') }
+    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.protectFolderPresent) { $readinessBlockers.Add('dpapi-protect-folder-required') }
+    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.loadStateQueryAvailable) { $readinessBlockers.Add('profile-state-query-unavailable') }
+    if (-not [bool]$record.environment.tempDirectoryWritable) { $readinessBlockers.Add('temp-directory-not-writable') }
+}
+if (-not [bool]$record.payloadRoundTripObserved) { $readinessBlockers.Add('dpapi-payload-roundtrip-missing') }
+if (-not [bool]$record.installationSecretRoundTripObserved) { $readinessBlockers.Add('dpapi-installation-secret-roundtrip-missing') }
+$record.readiness = [ordered]@{
+    status = if ($readinessBlockers.Count -eq 0) { 'Pass' } else { 'PendingTargetCertification' }
+    blockers = @($readinessBlockers)
+    nextAction = if ($readinessBlockers.Count -eq 0) { 'Rerun the Phase 4 exit gate to consume this evidence' } else { 'Use an interactive loaded Windows user profile with a writable temp directory and rerun the probe' }
 }
 if ($null -eq $record.failureCode) { $record.failureCode = 'RuntimeProbeUnavailable' }
 $path = Join-Path $outputPath 'PHASE4-DPAPI-RUNTIME-PROBE.json'
