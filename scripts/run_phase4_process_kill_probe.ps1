@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$env:MSBUILDDISABLENODEREUSE = '1'
 $project = Join-Path $RepositoryRoot 'experiments\DraftRescue.Phase4CrashProbe\DraftRescue.Phase4CrashProbe.csproj'
 $outputPath = Join-Path $RepositoryRoot $OutputDirectory
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null

@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$env:MSBUILDDISABLENODEREUSE = '1'
 $runnerStart = Get-Date
 $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
 $outputPath = Join-Path $RepositoryRoot $OutputDirectory
@@ -81,6 +82,8 @@ $record = [ordered]@{
     dpapiInstallationSecretRoundTripObserved = $(if ($null -ne $dpapi -and $null -ne $dpapi.installationSecretRoundTripObserved) { [bool]$dpapi.installationSecretRoundTripObserved } else { $false })
     dpapiFailureReason = $(if ($null -ne $dpapi -and $null -ne $dpapi.failureReason) { [string]$dpapi.failureReason } else { $null })
     dpapiFailureStage = $(if ($null -ne $dpapi -and $null -ne $dpapi.failureStage) { [string]$dpapi.failureStage } else { $null })
+    dpapiReadinessStatus = $(if ($null -ne $dpapi -and $null -ne $dpapi.readiness) { [string]$dpapi.readiness.status } else { $null })
+    dpapiReadinessBlockers = $(if ($null -ne $dpapi -and $null -ne $dpapi.readiness) { @($dpapi.readiness.blockers) } else { @('dpapi-runtime-evidence-missing') })
     diskFullEvidenceLoadStatus = $(if ($null -ne $diskFullLoadFailure) { $diskFullLoadFailure } elseif ($null -ne $diskFull) { 'Loaded' } else { 'NotSupplied' })
     environmentProfileLoadState = $(if ($null -ne $environment -and $null -ne $environment.profile) { [string]$environment.profile.loadState } else { $null })
     environmentProfileLoadStateQueryAvailable = $(if ($null -ne $environment -and $null -ne $environment.profile) { [bool]$environment.profile.loadStateQueryAvailable } else { $false })
