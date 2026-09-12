@@ -42,7 +42,8 @@ public sealed class WindowsDpapiInstallationSecretStore : IInstallationSecretPro
             var temporaryPath = _path + "." + Guid.NewGuid().ToString("N") + ".tmp";
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+                var directory = Path.GetDirectoryName(_path);
+                if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
                 await using (var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough | FileOptions.Asynchronous))
                 {
                     await stream.WriteAsync(encoded, cancellationToken).ConfigureAwait(false);
@@ -50,15 +51,15 @@ public sealed class WindowsDpapiInstallationSecretStore : IInstallationSecretPro
                 }
                 File.Move(temporaryPath, _path);
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
             {
                 var winner = await TryLoadAsync(cancellationToken).ConfigureAwait(false);
                 if (winner is not null) return winner;
-                throw new DraftProtectionException(DraftProtectionFailureCode.InstallationSecretUnavailable);
+                throw new DraftProtectionException(DraftProtectionFailureCode.InstallationSecretUnavailable, ex);
             }
             finally
             {
-                if (File.Exists(temporaryPath)) File.Delete(temporaryPath);
+                TryDeleteTemporary(temporaryPath);
                 CryptographicOperations.ZeroMemory(encoded);
                 CryptographicOperations.ZeroMemory(protectedKey);
             }
@@ -128,5 +129,23 @@ public sealed class WindowsDpapiInstallationSecretStore : IInstallationSecretPro
         if (length == 0 || length > int.MaxValue || encoded.Length != HeaderLength + (long)length)
             throw new DraftProtectionException(DraftProtectionFailureCode.InvalidInstallationSecret);
         return encoded.Slice(HeaderLength, (int)length).ToArray();
+    }
+
+    private static void TryDeleteTemporary(string path)
+    {
+        try
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+        catch (IOException)
+        {
+            // The temporary file contains only DPAPI ciphertext. Cleanup is best effort
+            // and must never replace the typed operation result or expose exception text.
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // The temporary file contains only DPAPI ciphertext. Cleanup is best effort
+            // and must never replace the typed operation result or expose exception text.
+        }
     }
 }
