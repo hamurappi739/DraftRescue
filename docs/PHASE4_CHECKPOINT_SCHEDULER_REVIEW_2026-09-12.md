@@ -2,7 +2,7 @@
 
 ## Decision
 
-The current-state checkpoint scheduler is implemented as an application-layer planner over `PersistenceCheckpointCoordinator`. It never writes or protects text itself; callers take due candidates and pass them through the existing protect-before-repository coordinator.
+The current-state checkpoint path is implemented as an application-layer planner plus bounded background executor over `PersistenceCheckpointCoordinator`. The scheduler never writes or protects text itself; the worker takes due candidates and passes them through the existing protect-before-repository coordinator.
 
 ## Guarantees
 
@@ -12,6 +12,7 @@ The current-state checkpoint scheduler is implemented as an application-layer pl
 - a configured pending-draft capacity prevents unbounded memory growth;
 - stale snapshot sequences cannot replace a newer pending/in-flight candidate;
 - protection/repository failures receive one delayed retry and cannot form a hot retry loop;
+- the worker wakes on a new schedule signal or the nearest due time, processes due work serially, and shuts down through cancellation without starting new reads;
 - failed, stale, empty, or disposed work does not create plaintext fallback or history rows.
 
 ## Timing decision
@@ -21,9 +22,9 @@ The scheduler requires an explicit `CheckpointSchedulePolicy`. Trailing debounce
 ## Evidence
 
 - Full solution build: 0 warnings, 0 errors.
-- Full test suite: **174/174** passed.
-- Tests cover coalescing, max dirty age, capacity rejection, delayed retry, newer-pending preservation, and stale-sequence rejection.
+- Full test suite: **178/178** passed.
+- Tests cover coalescing, max dirty age, capacity rejection, delayed retry, newer-pending preservation, stale-sequence rejection, manual due processing, background wakeup, and shutdown.
 
 ## Privacy traceability
 
-The implementation preserves P-008, P-018, P-030, P-043, P-046 and C-050: uncertainty remains fail-closed, retention stays bounded, diagnostics remain content-free, protection precedes persistence, operational outcomes are typed, and checkpoint work cannot create an unbounded writer/queue path. Preview, Copy, Restore, and browser capture remain out of scope.
+The implementation preserves P-008, P-018, P-030, P-043, P-046 and C-050: uncertainty remains fail-closed, retention stays bounded, diagnostics remain content-free, protection precedes persistence, operational outcomes are typed, and checkpoint work cannot create an unbounded writer/queue path. Preview, Copy, Restore, and browser capture remain out of scope. The worker is an application primitive; production composition still requires the explicit experiment-backed timing policy and is not silently enabled with arbitrary defaults.
