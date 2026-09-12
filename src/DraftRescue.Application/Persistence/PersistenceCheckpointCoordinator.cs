@@ -31,6 +31,9 @@ public sealed class PersistenceCheckpointCoordinator : IDisposable
 
         try
         {
+            if (cancellationToken.IsCancellationRequested)
+                return new CheckpointResult(CheckpointOutcome.Cancelled, candidate.Snapshot.SnapshotSequence);
+
             ProtectedDraftPayload protectedPayload;
             try
             {
@@ -40,6 +43,12 @@ public sealed class PersistenceCheckpointCoordinator : IDisposable
             }
             catch (OperationCanceledException) { return new CheckpointResult(CheckpointOutcome.Cancelled, candidate.Snapshot.SnapshotSequence); }
             catch { return new CheckpointResult(CheckpointOutcome.ProtectionFailed, candidate.Snapshot.SnapshotSequence); }
+
+            // Protection is synchronous and cannot observe the caller token. If cancellation
+            // arrives while DPAPI is running, discard the ciphertext before constructing or
+            // persisting a protected record.
+            if (cancellationToken.IsCancellationRequested)
+                return new CheckpointResult(CheckpointOutcome.Cancelled, candidate.Snapshot.SnapshotSequence);
 
             var updated = candidate.Snapshot.CapturedAtUtc;
             ProtectedDraftRecordV1 record;
@@ -55,6 +64,9 @@ public sealed class PersistenceCheckpointCoordinator : IDisposable
 
             try
             {
+                if (cancellationToken.IsCancellationRequested)
+                    return new CheckpointResult(CheckpointOutcome.Cancelled, candidate.Snapshot.SnapshotSequence);
+
                 var result = await _repository.UpsertAsync(record, cancellationToken).ConfigureAwait(false);
                 return result switch
                 {
