@@ -64,7 +64,7 @@ work package is Phase 4 encrypted local persistence.
 - monotonic transaction semantics — implemented and tested;
 - retention/expiry execution and desktop startup composition — implemented and tested;
 - corruption/quarantine/migration behavior — implemented and tested;
-- bounded checkpoint scheduling with explicit trailing-debounce/max-dirty-age policy, coalescing, capacity bound, and delayed retry — implemented and tested;
+- bounded checkpoint scheduling and background execution with explicit trailing-debounce/max-dirty-age policy, coalescing, capacity bound, delayed retry, signal/due-time wakeup, and protect-before-repository delegation — implemented and tested;
 - crash, lock, stale-sequence, synthetic disk-full, and plaintext-at-rest certification — implemented and tested;
 - remaining external certification: positive DPAPI CurrentUser roundtrip and real controlled disk-full fixture on a prepared target host.
 
