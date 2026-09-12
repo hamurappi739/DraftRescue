@@ -1,9 +1,18 @@
+using DraftRescue.Desktop.Persistence;
+
 namespace DraftRescue.Desktop.ViewModels;
 
 public sealed class MainWindowViewModel : ViewModelBase
 {
     private string _selectedLanguage = "Русский";
     private bool _isDarkTheme;
+    private readonly DesktopPersistenceAvailability _persistenceAvailability;
+
+    public MainWindowViewModel(
+        DesktopPersistenceAvailability persistenceAvailability = DesktopPersistenceAvailability.Ready)
+    {
+        _persistenceAvailability = persistenceAvailability;
+    }
 
     public event EventHandler? ThemeChanged;
 
@@ -70,6 +79,26 @@ public sealed class MainWindowViewModel : ViewModelBase
         ? "Приложение работает спокойно в фоне и не ведёт историю всего набранного."
         : "DraftRescue stays quiet in the background and does not keep a history of everything you type.";
 
+    public bool IsPersistenceUnavailable => _persistenceAvailability != DesktopPersistenceAvailability.Ready;
+
+    public string PersistenceTitle => IsRussian
+        ? "Локальная защита временно недоступна"
+        : "Local protection is temporarily unavailable";
+
+    public string PersistenceStatus => IsRussian
+        ? _persistenceAvailability switch
+        {
+            DesktopPersistenceAvailability.Corrupt => "Существующее хранилище не открыто. Новые черновики не сохраняются, чтобы не повредить данные.",
+            DesktopPersistenceAvailability.Incompatible => "Версия локального хранилища несовместима. Новые черновики не сохраняются.",
+            _ => "Хранилище не запущено. Новые черновики не сохраняются до восстановления доступа."
+        }
+        : _persistenceAvailability switch
+        {
+            DesktopPersistenceAvailability.Corrupt => "The existing store could not be opened. New drafts are not saved to protect your data.",
+            DesktopPersistenceAvailability.Incompatible => "The local store version is incompatible. New drafts are not saved.",
+            _ => "The store is not running. New drafts are not saved until access is restored."
+        };
+
     private bool IsRussian => string.Equals(SelectedLanguage, "Русский", StringComparison.Ordinal);
 
     private void RaiseLocalizedPropertiesChanged()
@@ -84,5 +113,7 @@ public sealed class MainWindowViewModel : ViewModelBase
         RaisePropertyChanged(nameof(Status));
         RaisePropertyChanged(nameof(PrivacySummary));
         RaisePropertyChanged(nameof(ScopeNote));
+        RaisePropertyChanged(nameof(PersistenceTitle));
+        RaisePropertyChanged(nameof(PersistenceStatus));
     }
 }
