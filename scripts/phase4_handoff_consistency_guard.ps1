@@ -35,7 +35,11 @@ if ($null -ne $status -and $null -ne $exit) {
 if ($null -ne $status -and $null -ne $target) {
     if ([string]$status.latestPhase4ExitGate.targetCertificationOutcome -ne [string]$target.outcome) { Add-Finding 'StatusMismatch' 'latestPhase4ExitGate.targetCertificationOutcome' }
 }
-if ($null -ne $privacy -and [string]$privacy.outcome -ne 'Pass') { Add-Finding 'PrivacyGuardNotPass' 'PHASE4-ARTIFACT-PRIVACY-GUARD.outcome' }
+if ($null -ne $privacy) {
+    if ([string]$privacy.outcome -ne 'Pass') { Add-Finding 'PrivacyGuardNotPass' 'PHASE4-ARTIFACT-PRIVACY-GUARD.outcome' }
+    $readinessCountProperty = $privacy.PSObject.Properties['readinessContractsChecked']
+    if ($null -eq $readinessCountProperty -or [int]$readinessCountProperty.Value -lt 2) { Add-Finding 'ReadinessContractCoverageMissing' 'PHASE4-ARTIFACT-PRIVACY-GUARD.readinessContractsChecked' }
+}
 
 $inventoryPath = Join-Path $rootFull 'FOUNDATION_FILE_INVENTORY.txt'
 $checksumPath = Join-Path $rootFull 'FOUNDATION_SHA256SUMS.txt'

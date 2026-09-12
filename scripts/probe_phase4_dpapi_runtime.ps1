@@ -83,6 +83,7 @@ if (Test-Path -LiteralPath $environmentPath) {
     }
 }
 $readinessBlockers = [System.Collections.Generic.List[string]]::new()
+$allowedProfileLoadStates = @('Loaded', 'NotLoaded', 'Unknown', 'QueryUnavailable')
 if ($null -eq $record.environment) {
     $readinessBlockers.Add('environment-evidence-missing')
 }
@@ -90,9 +91,21 @@ else {
     if (-not [bool]$record.environment.windows) { $readinessBlockers.Add('windows-target-required') }
     if (-not [bool]$record.environment.userProfileAvailable) { $readinessBlockers.Add('user-profile-required') }
     if ($null -eq $record.environment.session -or -not [bool]$record.environment.session.interactive) { $readinessBlockers.Add('interactive-user-session-required') }
-    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.appDataPresent) { $readinessBlockers.Add('appdata-directory-required') }
-    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.protectFolderPresent) { $readinessBlockers.Add('dpapi-protect-folder-required') }
-    if ($null -eq $record.environment.profile -or -not [bool]$record.environment.profile.loadStateQueryAvailable) { $readinessBlockers.Add('profile-state-query-unavailable') }
+    if ($null -eq $record.environment.profile) {
+        $readinessBlockers.Add('profile-state-unknown')
+        $readinessBlockers.Add('appdata-directory-required')
+        $readinessBlockers.Add('dpapi-protect-folder-required')
+        $readinessBlockers.Add('profile-state-query-unavailable')
+    }
+    else {
+        $profileLoadState = [string]$record.environment.profile.loadState
+        if ($allowedProfileLoadStates -notcontains $profileLoadState) { $readinessBlockers.Add('profile-state-unrecognized') }
+        elseif ($profileLoadState -eq 'NotLoaded') { $readinessBlockers.Add('profile-not-loaded') }
+        elseif ($profileLoadState -eq 'Unknown') { $readinessBlockers.Add('profile-state-unknown') }
+        elseif (-not [bool]$record.environment.profile.loadStateQueryAvailable) { $readinessBlockers.Add('profile-state-query-unavailable') }
+        if (-not [bool]$record.environment.profile.appDataPresent) { $readinessBlockers.Add('appdata-directory-required') }
+        if (-not [bool]$record.environment.profile.protectFolderPresent) { $readinessBlockers.Add('dpapi-protect-folder-required') }
+    }
     if (-not [bool]$record.environment.tempDirectoryWritable) { $readinessBlockers.Add('temp-directory-not-writable') }
 }
 if (-not [bool]$record.payloadRoundTripObserved) { $readinessBlockers.Add('dpapi-payload-roundtrip-missing') }

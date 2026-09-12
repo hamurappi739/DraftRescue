@@ -13,11 +13,41 @@ $forbiddenPropertyNames = @(
     'capturedText', 'draftText', 'plaintextText', 'clipboardText',
     'snippet', 'textValue', 'uiaValue', 'rawValue', 'windowTitle', 'url'
 )
+$allowedReadinessStatuses = @('Unknown', 'PendingTargetCertification', 'Pass')
+$allowedReadinessBlockers = @(
+    'environment-evidence-missing', 'windows-target-required', 'user-profile-required',
+    'interactive-user-session-required', 'appdata-directory-required',
+    'dpapi-protect-folder-required', 'profile-state-query-unavailable',
+    'profile-not-loaded', 'profile-state-unknown', 'profile-state-unrecognized',
+    'temp-directory-not-writable', 'dpapi-payload-roundtrip-missing',
+    'dpapi-installation-secret-roundtrip-missing'
+)
 $findings = [System.Collections.Generic.List[object]]::new()
 $filesChecked = 0
+$readinessContractsChecked = 0
 
 function Add-Finding([string]$file, [string]$code, [string]$field) {
     $findings.Add([ordered]@{ file = $file; code = $code; field = $field })
+}
+
+function Inspect-Readiness([object]$node, [string]$file, [string]$fieldPath) {
+    if ($null -eq $node) { Add-Finding $file 'MalformedReadiness' $fieldPath; return }
+    $script:readinessContractsChecked++
+    $statusProperty = $node.PSObject.Properties['status']
+    $blockersProperty = $node.PSObject.Properties['blockers']
+    if ($null -eq $statusProperty) { Add-Finding $file 'MalformedReadiness' ($fieldPath + '.status') }
+    elseif ($allowedReadinessStatuses -notcontains [string]$statusProperty.Value) { Add-Finding $file 'UnknownReadinessStatus' ($fieldPath + '.status') }
+    if ($null -eq $blockersProperty) {
+        Add-Finding $file 'MalformedReadiness' ($fieldPath + '.blockers')
+        return
+    }
+    $blockers = @($blockersProperty.Value)
+    for ($index = 0; $index -lt $blockers.Count; $index++) {
+        if ($allowedReadinessBlockers -notcontains [string]$blockers[$index]) { Add-Finding $file 'UnknownReadinessBlocker' ($fieldPath + '.blockers[' + $index + ']') }
+    }
+    if ($null -ne $statusProperty -and [string]$statusProperty.Value -eq 'Pass' -and $blockers.Count -ne 0) {
+        Add-Finding $file 'ReadinessPassWithBlockers' ($fieldPath + '.blockers')
+    }
 }
 
 function Get-RelativePath([string]$path) {
@@ -39,6 +69,14 @@ function Inspect-Node($node, [string]$file, [string]$fieldPath) {
         foreach ($property in $node.PSObject.Properties) {
             $name = [string]$property.Name
             $path = if ([string]::IsNullOrWhiteSpace($fieldPath)) { $name } else { $fieldPath + '.' + $name }
+            if ($name -eq 'readiness') { Inspect-Readiness $property.Value $file $path }
+            if ($name -eq 'dpapiReadinessStatus' -and $allowedReadinessStatuses -notcontains [string]$property.Value) { Add-Finding $file 'UnknownReadinessStatus' $path }
+            if ($name -eq 'dpapiReadinessBlockers') {
+                $flatBlockers = @($property.Value)
+                for ($index = 0; $index -lt $flatBlockers.Count; $index++) {
+                    if ($allowedReadinessBlockers -notcontains [string]$flatBlockers[$index]) { Add-Finding $file 'UnknownReadinessBlocker' ($path + '[' + $index + ']') }
+                }
+            }
             if ($forbiddenPropertyNames -contains $name) { Add-Finding $file 'ForbiddenContentProperty' $path }
             if ($name -eq 'containsSecrets' -and [bool]$property.Value) { Add-Finding $file 'SensitiveEvidenceFlag' $path }
             if ($property.Value -is [string] -and ([string]$property.Value -match '^(?i:[A-Z]:\\|\\\\)')) { Add-Finding $file 'AbsolutePathValue' $path }
@@ -75,6 +113,7 @@ $record = [ordered]@{
     experimentId = 'PHASE4-ARTIFACT-PRIVACY-GUARD'
     outcome = $outcome
     filesChecked = $filesChecked
+    readinessContractsChecked = $readinessContractsChecked
     findings = @($findings)
     containsSecrets = $false
     rawContentExported = $false
