@@ -9,13 +9,18 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $runnerStart = Get-Date
 $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
 $outputPath = Join-Path $RepositoryRoot $OutputDirectory
+. (Join-Path $PSScriptRoot 'phase4_test_metrics.ps1')
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
+$cleanedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
+$leakedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
 
 function Invoke-Probe([string]$scriptName, [string]$probeOutputDirectory) {
     $probeOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot $scriptName) `
         -RepositoryRoot $RepositoryRoot -OutputDirectory $probeOutputDirectory 2>&1)
     $probeOutput | ForEach-Object { Write-Host $_ }
-    return [int]$LASTEXITCODE
+    $probeExitCode = [int]$LASTEXITCODE
+    Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
+    return $probeExitCode
 }
 
 $environmentExit = Invoke-Probe 'probe_phase4_target_environment.ps1' $OutputDirectory
@@ -57,19 +62,7 @@ $checks = @(
 $pending = @($checks | Where-Object { $_.status -ne 'Pass' } | ForEach-Object { $_.id })
 $hasFail = @($checks | Where-Object { $_.status -eq 'Fail' }).Count -gt 0
 $outcome = if ($hasFail) { 'Fail' } elseif ($pending.Count -eq 0) { 'Pass' } else { 'Inconclusive' }
-$cleanedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
-$leakedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
-foreach ($process in @(Get-Process dotnet -ErrorAction SilentlyContinue)) {
-    $isNew = $baselineDotnetIds -notcontains [int]$process.Id
-    $startedDuringRun = $false
-    try { $startedDuringRun = $process.StartTime -ge $runnerStart } catch { }
-    if (-not ($isNew -and $startedDuringRun -and [string]::IsNullOrEmpty($process.MainWindowTitle))) { continue }
-    try {
-        Stop-Process -Id $process.Id -Force -ErrorAction Stop
-        $cleanedDotnetProcessIds.Add([int]$process.Id)
-    }
-    catch { $leakedDotnetProcessIds.Add([int]$process.Id) }
-}
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 $record = [ordered]@{
     schemaVersion = 1
     experimentId = 'PHASE4-TARGET-CERTIFICATION'
@@ -96,6 +89,9 @@ $record = [ordered]@{
         cleanedCount = $cleanedDotnetProcessIds.Count
         leakedCount = $leakedDotnetProcessIds.Count
         leakedProcessIds = @($leakedDotnetProcessIds)
+        drainMaxAttempts = [int]$script:Phase4OwnedDotnetProcessDrainMaxAttempts
+        drainIntervalMilliseconds = [int]$script:Phase4OwnedDotnetProcessDrainIntervalMilliseconds
+        scope = 'new-windowless-dotnet-after-baseline-within-run-window'
     }
     containsSecrets = $false
     syntheticEvidenceOnly = -not $diskFullPass

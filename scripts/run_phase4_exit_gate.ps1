@@ -9,8 +9,11 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $runnerStart = Get-Date
 $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
 $repoRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'phase4_test_metrics.ps1')
 $outputPath = Join-Path $repoRoot $OutputDirectory
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
+$cleanedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
+$leakedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
 
 $buildExit = 0
 if (-not $SkipBuild) {
@@ -34,12 +37,16 @@ if (-not $SkipBuild) {
 $testOutput = @(& dotnet test (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj') --no-build -c Debug --nologo 2>&1)
 $testOutput | ForEach-Object { Write-Output $_ }
 $testExit = $LASTEXITCODE
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'probe_phase4_dpapi_runtime.ps1') -RepositoryRoot $repoRoot -OutputDirectory $OutputDirectory
 $probeExit = $LASTEXITCODE
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'run_phase4_process_kill_probe.ps1') -RepositoryRoot $repoRoot -OutputDirectory $OutputDirectory
 $killProbeExit = $LASTEXITCODE
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'probe_phase4_target_environment.ps1') -RepositoryRoot $repoRoot -OutputDirectory $OutputDirectory
 $environmentProbeExit = $LASTEXITCODE
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'phase4_artifact_privacy_guard.ps1') -RepositoryRoot $repoRoot -OutputDirectory 'artifacts\phase4-artifact-privacy-guard'
 $artifactPrivacyGuardExit = $LASTEXITCODE
 
@@ -140,21 +147,7 @@ $allItemsPass = $pendingItems.Count -eq 0
 $outcome = if ($hasItemFail) { 'Fail' } elseif ($allItemsPass -and $blockers.Count -eq 0) { 'Pass' } else { 'Inconclusive' }
 $phase4Exit = $outcome -eq 'Pass'
 
-$cleanedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
-$leakedDotnetProcessIds = [System.Collections.Generic.List[int]]::new()
-$currentDotnet = @(Get-Process dotnet -ErrorAction SilentlyContinue)
-foreach ($process in $currentDotnet) {
-    $isNew = $baselineDotnetIds -notcontains [int]$process.Id
-    $isOwnedWindowless = $isNew -and [string]::IsNullOrEmpty($process.MainWindowTitle)
-    $startedDuringRun = $false
-    try { $startedDuringRun = $process.StartTime -ge $runnerStart } catch { }
-    if (-not ($isOwnedWindowless -and $startedDuringRun)) { continue }
-    try {
-        Stop-Process -Id $process.Id -Force -ErrorAction Stop
-        $cleanedDotnetProcessIds.Add([int]$process.Id)
-    }
-    catch { $leakedDotnetProcessIds.Add([int]$process.Id) }
-}
+Drain-Phase4OwnedDotnetProcesses -BaselineDotnetIds $baselineDotnetIds -RunStart $runnerStart -CleanedProcessIds $cleanedDotnetProcessIds -LeakedProcessIds $leakedDotnetProcessIds
 
 $record = [ordered]@{
     schemaVersion = 2
@@ -204,6 +197,9 @@ $record = [ordered]@{
         cleanedCount = $cleanedDotnetProcessIds.Count
         leakedCount = $leakedDotnetProcessIds.Count
         leakedProcessIds = @($leakedDotnetProcessIds)
+        drainMaxAttempts = [int]$script:Phase4OwnedDotnetProcessDrainMaxAttempts
+        drainIntervalMilliseconds = [int]$script:Phase4OwnedDotnetProcessDrainIntervalMilliseconds
+        scope = 'new-windowless-dotnet-after-baseline-within-run-window'
     }
     realDiskFullProbeArtifact = $(if ($null -ne $realDiskFull) { 'PHASE4-DISK-FULL-PROBE.json' } else { $null })
     syntheticEvidenceOnly = $syntheticEvidenceOnly
