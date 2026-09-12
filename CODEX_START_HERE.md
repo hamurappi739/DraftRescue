@@ -108,7 +108,7 @@ observation plane and Phase-2 metadata-only security boundary:
 - WP-4.4 protect-before-repository checkpoint coordinator and metadata-only retention execution; generation/cancellation/failure outcomes pass (`139/139`).
 - WP-4.6 typed corruption classification, local quarantine, and non-destructive migration policy pass (`142/142`); no salvage, auto-drop, or network recovery path exists.
 - WP-4.7 synthetic plaintext-at-rest canary scan and bounded crash/lock/disk-full fault certification pass (`148/148`); no canary matches or plaintext fallback.
-- WP-4.8 final evidence combiner is Inconclusive: DPAPI CurrentUser positive roundtrip and real disk-full certification remain blockers; the OS-level process-kill rollback probe and deterministic BeforeCommit disk-full rollback pass, with no unsafe fallback added. Gate diagnostics are schema v2 with typed required/pending items and a passing artifact privacy guard; the latest full run is build `0/0`, tests `181/181`, `phase4Exit=false`, and the DPAPI probe records structural `failureStage=Protect`/`failureReason=Cryptographic` on this host.
+- WP-4.8 final evidence combiner is Inconclusive: DPAPI CurrentUser positive roundtrip and real disk-full certification remain blockers; the OS-level process-kill rollback probe and deterministic BeforeCommit disk-full rollback pass, with no unsafe fallback added. Gate diagnostics are schema v2 with typed required/pending items, while the DPAPI runtime probe is schema v3 and checks both payload and installation-secret round-trips; the latest full run is build `0/0`, tests `181/181`, `phase4Exit=false`, and the DPAPI probe records structural `failureStage=Protect`/`failureReason=Cryptographic` on this host.
 
 ### NOT implemented today
 
