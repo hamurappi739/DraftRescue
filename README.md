@@ -4,7 +4,7 @@
 
 DraftRescue is a privacy-first Windows desktop application intended to recover temporary, unsaved drafts from ordinary text fields after an unexpected tab, window, application, or PC restart.
 
-This repository currently contains the **Phase 0 architecture foundation plus the Phase 1 WP-1.1 foreground, WP-1.2 focused metadata and WP-1.3 coordination prototypes, with partial WP-1.4 evidence**. It intentionally does **not** capture keyboard input, read target text through UI Automation, persist drafts, restore text, access the clipboard, or integrate with browsers.
+The repository contains the metadata-safe observation foundation, guarded capture contracts, and the Phase 4 protected local persistence runtime. The desktop shell starts a per-user SQLite store, performs metadata-only retention cleanup, and reports storage availability without exposing draft content. Preview, Copy, Restore, browser integration, cloud sync, and typing history remain intentionally out of scope.
 
 ## Non-negotiable privacy boundary
 
@@ -15,20 +15,20 @@ DraftRescue must not become a keylogger.
 - Private/incognito browser contexts are excluded by default.
 - No cloud text processing or cloud AI.
 - No draft contents in logs.
-- Recoverable drafts are temporary, local, encrypted, and retention-limited when persistence is implemented later.
+- Recoverable drafts are temporary, local, encrypted with Windows DPAPI `CurrentUser`, and retention-limited.
 - Uncertain secure/private context fails closed: do not persist.
 
 ## Solution layout
 
 - `src/DraftRescue.Domain` — core privacy-safe value objects and lifecycle concepts.
 - `src/DraftRescue.Application` — use-case contracts and policy abstractions.
-- `src/DraftRescue.Platform.Windows` — future Win32/UI Automation adapters only.
-- `src/DraftRescue.Infrastructure` — future local encrypted persistence and infrastructure adapters.
-- `src/DraftRescue.Desktop` — Avalonia composition root and UI shell.
-- `tests/DraftRescue.Tests` — core/architecture tests that do not require launching the UI.
+- `src/DraftRescue.Platform.Windows` — Windows observation, DPAPI, and per-user storage adapters.
+- `src/DraftRescue.Infrastructure` — protected SQLite repository, schema, retention, and corruption handling.
+- `src/DraftRescue.Desktop` — Avalonia composition root, persistence startup, and UI shell.
+- `tests/DraftRescue.Tests` — unit, architecture, privacy, persistence, and desktop lifecycle tests.
 - `docs` — architecture, threat model, ADRs, execution rules, and canonical project context.
 
-## Phase 0 verification
+## Build and test
 
 On a Windows x64 machine with a compatible stable .NET 8 SDK installed (see `global.json` and `docs/SDK_REPRODUCIBILITY_POLICY.md`):
 
@@ -42,15 +42,25 @@ or:
 scripts\verify.cmd
 ```
 
-The scripts must fail on the first failing scope/SDK/restore/build/test step. Do not begin Phase 1 until the complete gate succeeds and the Avalonia shell is launched manually.
+The verification scripts fail on the first failing scope, SDK, restore, build, or test step. The current solution builds on Windows x64 with .NET 8 and the complete test suite is green.
+
+To launch the desktop shell locally:
+
+```powershell
+dotnet run --project .\src\DraftRescue.Desktop\DraftRescue.Desktop.csproj
+```
+
+The runtime uses the current Windows user's `%LOCALAPPDATA%\DraftRescueData` directory. If DPAPI or the local store is unavailable, the application remains fail-closed and shows a non-sensitive warning instead of writing plaintext.
 
 ## Current status
 
-Phase 0 is verified on Windows x64 with .NET SDK 8.0.424. WP-1.1 provides content-free foreground WinEvent observation, WP-1.2 focused UI Automation metadata, WP-1.3 metadata-only coordination, and WP-1.4 now has synthetic, Notepad and managed WPF metadata-only reconnaissance records plus a corrected 30-minute synthetic soak; target-content reads and all persistence features remain future work. The UI/UX direction is documented in `docs/UI_UX_CODEX_PROPOSAL_2026-09-03.md`. See `CODEX_FOUNDATION_AUDIT_2026-09-02.md`, `CODEX_AUDIT_RESOLUTION_2026-09-02.md`, and `CODEX_REVIEW_TO_ORIGINAL_AI.md`.
+Phase 4 implementation is complete at the code and synthetic-certification level. The latest run builds with 0 warnings and 0 errors and passes **167/167 tests**. SQLite schema validation, DPAPI boundary handling, monotonic protected writes, retention cleanup, corruption classification, process-kill rollback, and plaintext-at-rest canary guards are covered. The final Phase 4 gate is currently **Inconclusive only because this host cannot provide the two external certifications**: a positive DPAPI `CurrentUser` roundtrip and a real controlled disk-full fixture. No plaintext fallback is used to hide those conditions.
+
+The desktop UI follows the quiet Apple-inspired direction: a compact recovery surface, explicit privacy copy, language switching, light/dark themes, and a localized storage-health banner. It never renders draft bodies during startup or list loading.
 
 ## UI/UX design baseline
 
-Future UI implementation should follow:
+The UI implementation follows:
 
 - `docs/UI_UX_MASTER_SPEC.md` — complete minimal UI direction and wireframes.
 - `docs/UI_STATE_MODEL.md` — presentation states and security boundaries for ViewModels.
@@ -61,7 +71,7 @@ The baseline product model is a quiet background utility with a small Recovery i
 
 ## Design package for future Cursor work
 
-The repository now contains a pre-implementation product/architecture package. The current user-approved workflow is **no Cursor yet**; see `docs/CURRENT_PROJECT_MODE.md`. When Cursor is later introduced, it should execute narrow work packages instead of inventing core behavior. Start future handoff with `docs/CURSOR_HANDOFF_INDEX.md`.
+The repository also contains the canonical product/architecture package used to constrain future work. New implementation should execute one documented work package at a time and start with `docs/CURSOR_HANDOFF_INDEX.md`.
 
 High-value specifications include:
 
@@ -95,7 +105,7 @@ The handoff package now also fixes several implementation-sensitive decisions th
 - `docs/FAILURE_RECOVERY_MATRIX.md` — fail-closed behavior for provider, storage, crypto, restore, and expiry failures.
 - `docs/SEQUENCE_DIAGRAMS.md` — normative ordering for capture, preview, restore, and expiry flows.
 
-These documents deepen the future handoff without implementing Phase 1 runtime behavior.
+These documents preserve the accepted privacy and architecture decisions that the runtime must continue to respect.
 
 ## Testable handoff artifacts
 
@@ -106,7 +116,7 @@ Future implementation work now has stable privacy invariant IDs (`P-001`..`P-030
 
 Before Cursor is introduced, this repository intentionally captures the product decisions that an implementation agent must not invent. In addition to the Phase-0 solution skeleton, `docs/` now specifies draft lifecycle, classification-before-read, field identity/rebinding, checkpoint scheduling, persistence/crypto boundaries, shutdown behavior, recovery matching, verified Restore outcomes, app-profile governance, packaging/startup/update safety, threat-to-test traceability, and target support certification.
 
-The current mode remains specification-first. Runtime APIs belonging to later phases are intentionally absent from `src/` until their work package is activated.
+Runtime APIs are activated only when their documented work package begins; unsupported workflows remain absent by design.
 
 
 ## Implementation-ready contract layer
@@ -146,10 +156,10 @@ Phase 2 SecureInputGuard is specified through `docs/PHASE2_PREIMPLEMENTATION_PAC
 Phase 3 is now specified through `docs/PHASE3_PREIMPLEMENTATION_PACKAGE_INDEX.md`. It is the first phase allowed to consume target text, but only through an atomically claimed one-read Phase-2 capability. The package fixes bounded TextPattern reads, certified ValuePattern use, exact-content preservation, explicit oversize failure, transient plaintext ownership, race-safe snapshot envelopes, one-current-state in-memory tracking, empty stabilization, non-leakage architecture tests, and a binary Phase-3 exit gate. Durable persistence remains Phase 4.
 
 
-## Current design depth: Phase 4 pre-implementation
+## Phase 4 protected persistence
 
-Phase 4 encrypted persistence is specified through `docs/PHASE4_PREIMPLEMENTATION_PACKAGE_INDEX.md`. The canonical path is protector-before-repository: a Phase-3 current snapshot is encoded into `DraftPayloadV1`, protected with Windows DPAPI `CurrentUser`, converted into `ProtectedDraftRecordV1`, and only then committed to SQLite.
+Phase 4 encrypted persistence follows `docs/PHASE4_PREIMPLEMENTATION_PACKAGE_INDEX.md`. The canonical path is protector-before-repository: a Phase-3 current snapshot is encoded into `DraftPayloadV1`, protected with Windows DPAPI `CurrentUser`, converted into `ProtectedDraftRecordV1`, and only then committed to SQLite.
 
 The Phase-4 package fixes SQLite schema v1, `journal_mode=DELETE`, `secure_delete=ON`, `synchronous=EXTRA` durability-first baseline, one serialized writer, persisted monotonic `SnapshotSequence`, metadata-only startup/list queries, DPAPI-protected installation HMAC secret, retention/expiry execution, corruption/quarantine, fail-closed migration, and plaintext-at-rest canary certification.
 
-`secure_delete` is defense-in-depth only; the product does not promise forensic physical erasure. Phase 4 stops before Preview/Copy/Restore.
+`secure_delete` is defense-in-depth only; the product does not promise forensic physical erasure. Phase 4 stops before Preview/Copy/Restore, and current exit blockers are recorded in `artifacts/phase4-exit-gate/PHASE4-EXIT-GATE.json` after running the gate scripts.
