@@ -1,6 +1,6 @@
 # Phase 2 — SecureInputGuard Pre-Implementation Package
 
-**Status:** canonical pre-implementation package. No Phase 2 production implementation should begin without reading this index.
+**Status:** canonical Phase 2 contract and gate reference. The Phase 2 implementation is retained as a security boundary for later phases.
 
 ## Objective
 
@@ -64,4 +64,4 @@ Phase 2 does **not** implement:
 
 ## Deliverable
 
-At Phase 2 exit, the repository has a security gate and an unforgeable-in-normal-code capability abstraction, but still has no target-content reader implementation. Phase 3 is the first phase allowed to consume that capability.
+At Phase 2 exit, the repository has a security gate and an unforgeable-in-normal-code capability abstraction. Phase 3 is the first phase allowed to consume that capability. Once Phase 3 is active, the Phase 2 source guard scopes itself to the security components and the Phase 3 content-boundary guard owns the reader implementation checks.
