@@ -92,7 +92,11 @@
 85. Проведён полный WP4 regression: `run_phase4_contracts_gate.ps1`, `run_phase4_dpapi_gate.ps1`, `run_phase4_sqlite_gate.ps1`, `run_phase4_coordinator_gate.ps1`, `run_phase4_recovery_gate.ps1` и `run_phase4_fault_gate.ps1` — все `Pass`, каждый с `148/148`; итоговый exit gate — `Inconclusive` только по DPAPI CurrentUser и real disk-full. Свежие безоконные `dotnet`-процессы после прогона очищены.
 86. Уточнена диагностика профиля: environment probe теперь различает `Loaded`, `NotLoaded`, `Unknown` и `QueryUnavailable` через typed `loadState`/`loadStateQueryAvailable`. На текущем host зафиксировано `QueryUnavailable`, поэтому DPAPI readiness не повышается; неопределённость остаётся fail-closed.
 87. Runner target certification больше не падает на отсутствующем/битом external disk-full JSON: выдаёт typed `Inconclusive`, `diskFullEvidenceLoadStatus=DiskFullEvidenceNotFound|DiskFullEvidenceMalformed` и сохраняет следующий шаг. Canonical run без внешнего файла остаётся `NotSupplied`; artifact privacy guard — `Pass`.
-88. Добавлен `phase4_handoff_consistency_guard.ps1`: он сверяет `CODEX_HANDOFF_STATUS.json`, Phase-4 exit/target/privacy artifacts и inventory/checksum counts. Последний запуск — `Pass`, findings `0`, согласованы `1337` файлов и `290` Markdown.
+88. Добавлен `phase4_handoff_consistency_guard.ps1`: он сверяет `CODEX_HANDOFF_STATUS.json`, Phase-4 exit/target/privacy artifacts и inventory/checksum counts. Последний запуск — `Pass`, findings `0`, согласованы `1420` файлов и `294` Markdown.
+89. Добавлены bounded `PersistenceCheckpointScheduler` и `PersistenceCheckpointWorker`: явная политика debounce/max-dirty-age/retry, coalescing по `DraftId`, newest-candidate selection, single-flight execution и bounded one-retry budget без plaintext queue. Runtime владеет worker-ом и корректно освобождает его до coordinator/SQLite.
+90. Диагностика DPAPI стала структурной: `DraftProtectionFailureReason` (`PlatformNotSupported`, `Unauthorized`, `Cryptographic`, `Unknown`) передаётся через платформенный слой и сохраняется только как закрытая категория, без текста исключения.
+91. Скомпилированный DPAPI probe v3 проверяет оба CurrentUser пути — payload и installation HMAC secret — и публикует только boolean round-trip, `failureStage`, `failureReason` и закрытый `readiness.blockers`. На текущем host оба round-trip не наблюдаются; `harnessExitCode=0`, то есть это повторяемый target result, а не поломка harness.
+92. Все Phase-4 runners получили bounded MSBuild/process-scope настройку (`MSBUILDDISABLENODEREUSE=1`) и сохраняют только структурные cleanup counters. Документация уточнена: настройка снижает cross-run contamination risk, но не подменяет реальную target certification.
 
 ## Проверка результата
 
@@ -100,15 +104,17 @@
 - `dotnet restore .\\DraftRescue.sln`: passed.
 - `dotnet build .\\DraftRescue.sln --no-restore -c Debug`: passed after stopping stale build/test processes, 0 warnings, 0 errors (including Avalonia Desktop).
 - `dotnet build .\\tests\\DraftRescue.Tests\\DraftRescue.Tests.csproj --no-restore -c Debug`: Phase-4 application/infrastructure/test build passed, 0 warnings/0 errors.
-- `dotnet test .\\tests\\DraftRescue.Tests\\DraftRescue.Tests.csproj --no-build -c Debug`: latest verification passed, 148/148.
-- `scripts/run_phase4_exit_gate.ps1`: full WP4.8 review completed with build `0/0`, tests `148/148`, process-kill Pass, typed DPAPI result `DpapiFailure` (`harnessExitCode=0`), target environment probe Pass, aggregate `Inconclusive` with exactly two pending items.
-- `scripts/run_phase4_target_certification.ps1`: target-host runner added; on the current host it must remain `Inconclusive` because `profile.loaded=false` and no real disk-full evidence is supplied.
+- `dotnet test .\\tests\\DraftRescue.Tests\\DraftRescue.Tests.csproj --no-build -c Debug`: latest verification passed, 181/181.
+- `scripts/run_phase4_exit_gate.ps1`: latest WP4.8 review completed with build `0/0`, tests `181/181`, process-kill Pass, typed DPAPI result `DpapiFailure` (`failureStage=Protect`, `failureReason=Cryptographic`, `harnessExitCode=0`), target environment probe Pass, aggregate `Inconclusive` with exactly two pending items.
+- `scripts/run_phase4_target_certification.ps1`: target-host runner remains `Inconclusive` on the current host because profile load state is `QueryUnavailable`, both DPAPI round-trips are unobserved, and no real disk-full evidence is supplied.
 - `scripts/phase1_scope_guard.ps1` and `scripts/phase2_content_boundary_guard.ps1`: passed.
 - Phase 2 historical gate `artifacts/phase2-security-gate-wp28/PHASE2-SECURITY-GATE.json`: Pass; solution/harness build `0/0`, tests `82/82` at the Phase-2 boundary, native fixture `3/3`, executable fault harness `24/24`, `10,000` stress evaluations and capability cycles, `0` forbidden APIs, `0` content reads.
 - Phase 3 application gate `artifacts/phase3-application-gate-final/PHASE3-APPLICATION-GATE.json`: Pass for WP-3.1..WP-3.6; tracker/current-state, exact-text, bounded TextPattern and certified ValuePattern tests pass, guard reports two readers, zero forbidden APIs and zero content reads.
 - Phase 3 integrated/exit gates `artifacts/phase3-integrated-gate-final/PHASE3-INTEGRATED-GATE.json` and `artifacts/phase3-exit-gate-final/PHASE3-EXIT-GATE.json`: Pass; operational soak `artifacts/phase3-soak-final/PHASE3-OPERATIONAL-SOAK.json` completed 1800 seconds with 2.57B successful iterations and no unbounded growth.
 
 Применённые инварианты WP-1.3: P-001, P-002, P-003, P-025, P-026, P-028, P-029, P-030; C-003, C-016, C-017, C-018, C-022, C-023, C-025.
+
+Для текущего WP4.8 cleanup/evidence hardening применяются P-008, P-018, P-030, P-043, P-046 и C-050: диагностика остаётся content-free, защита выполняется до persistence, неизвестное состояние target/profile не повышает readiness, а внешнее disk-full evidence принимается только по typed privacy contract.
 
 Старый Phase 0 scope guard намеренно запрещает ссылку на `System.Windows.Automation`; после перехода к WP-1.2 это ожидаемое ограничение устаревшей Phase 0 проверки, а не основание ослаблять privacy guard. Для текущего этапа используется отдельный `scripts/phase1_scope_guard.ps1`. Полный `scripts/verify.ps1` поэтому всё ещё останавливается на историческом Phase 0 guard; актуальные Phase 1/2 guards проходят.
 
@@ -139,3 +145,7 @@ fault harness `24/24`, boundary/API guard Pass и `0` content reads.
 Phase 3 WP-3.1..WP-3.8 application/integrated/operational gate также Pass;
 TextPattern и ValuePattern readers реализованы, non-leakage evidence собрана,
 30-minute soak завершён, финальный exit review Pass.
+Phase 4 WP4.1..WP4.7 gates Pass и WP4.8 hardening завершён: build `0/0`,
+`181/181` tests, artifact privacy и handoff guards Pass. Final exit остаётся
+`Inconclusive` fail-closed до успешного DPAPI CurrentUser roundtrip и real
+controlled disk-full evidence; Phase 5 Preview/Copy/Restore не начинались.
