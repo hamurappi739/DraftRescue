@@ -15,7 +15,7 @@ cd "D:\РАБОЧИЙ СТОЛ\draftRescue\обновленное"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_phase4_target_certification.ps1
 ```
 
-Скрипт запускает content-free environment probe, скомпилированный DPAPI probe и process-kill rollback probe. После завершения он удаляет только новые безоконные `dotnet`-процессы, созданные в рамках этого запуска, и записывает `leakedCount`; ожидаемый результат в неподготовленном профиле — `Inconclusive`, а не Pass.
+Скрипт запускает content-free environment probe, скомпилированный DPAPI probe и process-kill rollback probe. DPAPI probe сохраняет только структурную `failureReason` (`PlatformNotSupported`, `Unauthorized`, `Cryptographic` или `Unknown`), без текста исключения и без payload. После завершения runner удаляет только новые безоконные `dotnet`-процессы, созданные в рамках этого запуска, и записывает `leakedCount`; ожидаемый результат в неподготовленном профиле — `Inconclusive`, а не Pass.
 
 Если инфраструктурная команда получила отдельный JSON от реального disk-full fixture, передайте его явно:
 
