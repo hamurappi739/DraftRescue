@@ -12,8 +12,10 @@ switch (mode)
 {
     case "dpapi":
         var failureStage = "Unknown";
+        var probeDirectory = Path.Combine(Path.GetTempPath(), "DraftRescue-Phase4-DpapiProbe-" + Guid.NewGuid().ToString("N"));
         try
         {
+            Directory.CreateDirectory(probeDirectory);
             var id = new DraftId(Guid.NewGuid());
             var context = DraftProtectionContext.Create(id, 1);
             var protector = new WindowsDpapiDraftProtector();
@@ -27,6 +29,20 @@ switch (mode)
                 Console.WriteLine("failureStage=Validation");
                 return 5;
             }
+            Console.WriteLine("payloadRoundTrip=Pass");
+
+            var installationSecretPath = Path.Combine(probeDirectory, "installation-key.protected");
+            var installationSecrets = new WindowsDpapiInstallationSecretStore(installationSecretPath);
+            failureStage = "InstallationSecretCreate";
+            var firstSecret = await installationSecrets.GetOrCreateAsync();
+            failureStage = "InstallationSecretLoad";
+            var secondSecret = await installationSecrets.GetOrCreateAsync();
+            if (!firstSecret.Bytes.Span.SequenceEqual(secondSecret.Bytes.Span))
+            {
+                Console.WriteLine("failureStage=Validation");
+                return 5;
+            }
+            Console.WriteLine("installationSecretRoundTrip=Pass");
             Console.WriteLine("failureStage=None");
             return 0;
         }
@@ -37,6 +53,15 @@ switch (mode)
             Console.WriteLine($"failureStage={failureStage}");
             Console.WriteLine($"failureReason={error.Reason}");
             return 6;
+        }
+        finally
+        {
+            try
+            {
+                if (Directory.Exists(probeDirectory)) Directory.Delete(probeDirectory, recursive: true);
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
         }
     case "seed":
         using (var connection = SqliteStoreBootstrapper.Open(database))
