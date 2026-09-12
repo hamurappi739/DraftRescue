@@ -21,7 +21,13 @@ switch (mode)
             var roundTrip = protector.Unprotect(protectedPayload, context);
             return roundTrip.Text == plaintext.Text && protectedPayload.Bytes.Length > 0 ? 0 : 5;
         }
-        catch (DraftProtectionException) { return 6; }
+        catch (DraftProtectionException error)
+        {
+            // Only an audited structural reason is emitted; never print the
+            // provider exception message or any payload-derived value.
+            Console.WriteLine($"failureReason={error.Reason}");
+            return 6;
+        }
     case "seed":
         using (var connection = SqliteStoreBootstrapper.Open(database))
         {
