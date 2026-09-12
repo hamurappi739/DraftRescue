@@ -2,17 +2,16 @@
 
 ## Executive status
 
-Design/specification is deepest through **Phase 4**. Production implementation is still effectively at **Phase 0 skeleton**.
+Design/specification is deepest through **Phase 4**, and the implementation now reaches the protected local persistence runtime. The desktop shell composes per-user encrypted SQLite storage, bounded retention, corruption classification, and a fail-closed storage-health surface.
 
-Therefore the main remaining work is not more brainstorming; it is disciplined implementation and Windows validation in phase order.
+The remaining work is disciplined Windows validation and the later user-facing recovery phases; it is not a license to bypass the accepted privacy boundaries.
 
 ## Remaining implementation work
 
 ### Phase 0
 
-- verify restore/build/tests on Windows .NET 8;
-- launch Avalonia shell;
-- repair only skeleton/build issues.
+- historical foundation gate completed;
+- continue to preserve the architecture and privacy guards during later changes.
 
 ### Phase 1
 
@@ -58,20 +57,19 @@ work package is Phase 4 encrypted local persistence.
 
 ### Phase 4
 
-- `IDraftProtector` + DPAPI CurrentUser implementation;
-- DPAPI-protected installation HMAC secret;
-- SQLite schema/bootstrap/PRAGMA verification;
-- protected-record-only repository;
-- single writer coordinator;
-- monotonic transaction semantics;
-- scheduler -> protector -> repository pipeline;
-- retention/expiry execution;
-- corruption/quarantine/migration behavior;
-- crash/disk-full/lock/stale-sequence fault injection;
-- plaintext-at-rest canary certification.
+- `IDraftProtector` + DPAPI CurrentUser implementation — implemented and guarded;
+- DPAPI-protected installation HMAC secret — implemented and guarded;
+- SQLite schema/bootstrap/PRAGMA verification — implemented and guarded;
+- protected-record-only repository and single writer coordinator — implemented and tested;
+- monotonic transaction semantics — implemented and tested;
+- retention/expiry execution and desktop startup composition — implemented and tested;
+- corruption/quarantine/migration behavior — implemented and tested;
+- crash, lock, stale-sequence, synthetic disk-full, and plaintext-at-rest certification — implemented and tested;
+- remaining external certification: positive DPAPI CurrentUser roundtrip and real controlled disk-full fixture on a prepared target host.
 
 ### Phase 5
 
+- blocked until the Phase 4 exit gate reports Pass;
 - metadata-only recoverable list;
 - empty/loading/error/ready UI states;
 - explicit Preview decrypt lifecycle;
