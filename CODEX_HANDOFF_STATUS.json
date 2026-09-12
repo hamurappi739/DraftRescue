@@ -288,7 +288,7 @@
     "artifact": "artifacts/phase4-exit-gate/PHASE4-EXIT-GATE.json",
     "schemaVersion": 2,
     "scope": "WP-4.8 combined Phase 4 exit evidence review",
-    "testSuite": "148/148",
+    "testSuite": "181/181",
     "sourceBoundary": "Pass",
     "priorGatesPresent": true,
     "dpapiCurrentUserRoundTripObserved": false,
@@ -300,6 +300,7 @@
     "dpapiRuntimeProbeResult": "DpapiFailure",
     "dpapiRuntimeProbeHarnessExitCode": 0,
     "dpapiRuntimeProbeExecutionStatus": "ProbeCompletedDpapiUnavailable",
+    "dpapiRuntimeProbeFailureStage": "Protect",
     "processKillProbeArtifact": "artifacts/phase4-exit-gate/PHASE4-PROCESS-KILL-PROBE.json",
     "processKillProbeExitCode": 0,
     "processKillRollbackPreservedOldRow": true,
@@ -400,9 +401,9 @@
     "exactFirstGreenSdkVersion": "8.0.424"
   },
   "packageInventory": {
-    "fileCount": 1337,
-    "markdownFileCount": 290,
-    "checksumEntries": 1337,
+    "fileCount": 1420,
+    "markdownFileCount": 294,
+    "checksumEntries": 1420,
     "checksumExcludes": [
       "FOUNDATION_SHA256SUMS.txt"
     ]
