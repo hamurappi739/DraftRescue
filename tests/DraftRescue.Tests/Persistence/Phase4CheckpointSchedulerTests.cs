@@ -78,6 +78,21 @@ public sealed class Phase4CheckpointSchedulerTests
     }
 
     [Fact]
+    public void FailedRetryIsDroppedAfterItsSingleRetryBudgetIsConsumed()
+    {
+        using var scheduler = new PersistenceCheckpointScheduler(Policy);
+        var candidate = Candidate(1, "retry-once");
+        scheduler.Schedule(candidate, 0);
+
+        Assert.True(scheduler.TryTakeDue(100, out var selected));
+        Assert.True(scheduler.Complete(selected!, CheckpointOutcome.RepositoryFailed, 100));
+        Assert.True(scheduler.TryTakeDue(350, out selected));
+        Assert.True(scheduler.Complete(selected!, CheckpointOutcome.RepositoryFailed, 350));
+        Assert.Equal(0, scheduler.PendingCount);
+        Assert.False(scheduler.TryTakeDue(10_000, out _));
+    }
+
+    [Fact]
     public void NewerPendingSnapshotSurvivesOlderInFlightCompletion()
     {
         using var scheduler = new PersistenceCheckpointScheduler(Policy);
