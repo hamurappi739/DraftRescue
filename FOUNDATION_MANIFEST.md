@@ -3,15 +3,15 @@
 - Project: DraftRescue
 - Package role: Phase 0 architecture + deep pre-implementation / future Cursor handoff foundation
 - Generated/updated: 2026-09-08
-- File count: 1337
-- Markdown documentation files: 290
+- File count: 1420
+- Markdown documentation files: 294
 - Accepted ADRs: 63
 - Canonical registered test IDs: 229
 - Privacy invariants: P-001..P-050
 - Correctness invariants: C-001..C-050
 - Runtime implementation status: Phase 0 verified; Phase 1 gate passed 8/8 via bounded interactive WPF confirmation; Phase 2 WP-2.1..WP-2.8 security/capability gate is closed; Phase 3 WP-3.1..WP-3.8 application contracts, bounded certified TextPattern/ValuePattern readers, snapshots, current-state tracker, integrated non-leakage evidence and 30-minute operational soak are implemented/tested with exit Pass. Phase 4 WP4.1 contracts/schema, WP4.2 DPAPI CurrentUser/installation-secret boundaries, WP4.3 SQLite bootstrap/serialized repository, WP4.4 protect-before-repository coordinator/metadata-only retention, WP4.6 typed recovery/quarantine/migration safety, and WP4.7 plaintext-at-rest/fault certification are implemented/tested; WP4.8 exit remains pending.
 - Current workflow: no Cursor yet; prepare canonical decisions/specifications/tests first
-- Build status: Phase 0, Phase 1, Phase 2 and the Phase-3 application/integrated gates are green on Windows x64 with .NET SDK 8.0.424; latest full solution Phase-4 WP4.8 review build 0 warnings/0 errors, tests 148/148, plaintext/fault guard passes; process-kill rollback passes, exit remains Inconclusive pending DPAPI and real disk-full evidence
+- Build status: Phase 0, Phase 1, Phase 2 and the Phase-3 application/integrated gates are green on Windows x64 with .NET SDK 8.0.424; latest full solution Phase-4 WP4.8 review build 0 warnings/0 errors, tests 181/181, plaintext/fault guard passes; process-kill rollback passes, exit remains Inconclusive pending DPAPI and real disk-full evidence
 - Latest deep-design pass: Phase 4 encrypted-persistence package — protector-before-repository boundary, DPAPI CurrentUser payload v1, DPAPI-protected installation HMAC secret, SQLite schema v1, DELETE/EXTRA/secure_delete policy, serialized monotonic writer, metadata-only listing, expiry execution, corruption/quarantine, migration safety, plaintext-at-rest canary certification and Phase 4 exit gate
 
 ## Start here now
@@ -97,7 +97,7 @@
 ## Phase 4 WP4.8 evidence
 
 - `docs/PHASE4_FINAL_EXIT_REVIEW_2026-09-08.md`
-- `artifacts/phase4-exit-gate/PHASE4-EXIT-GATE.json` — Inconclusive, prior gates present, source boundary Pass, 148/148 tests.
+- `artifacts/phase4-exit-gate/PHASE4-EXIT-GATE.json` — Inconclusive, prior gates present, source boundary Pass, 181/181 tests.
 - Blockers are explicit: successful DPAPI CurrentUser roundtrip on the target profile and OS-level kill/real disk-full certification. No plaintext fallback or unsafe recovery path was introduced.
 
 ## Phase 4 WP4.1 evidence
@@ -134,7 +134,7 @@ Codex-specific takeover artifacts:
 
 Critical status: Phase 0 is verified; Phase 1 WP-1.1 foreground and WP-1.2 focused UIA metadata prototypes are implemented. Target-content reads, persistence and restore remain unimplemented. Phases 2–4 have deep pre-implementation specifications, and Phases 5–10 remain implementation work.
 
-Current Codex handoff file count: **575 files**.
+Current Codex handoff file count: **1420 files**.
 
 
 ## Codex audit resolution
