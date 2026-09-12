@@ -16,5 +16,6 @@
     <ProjectReference Include="..\..\src\DraftRescue.Application\DraftRescue.Application.csproj" />
     <ProjectReference Include="..\..\src\DraftRescue.Platform.Windows\DraftRescue.Platform.Windows.csproj" />
     <ProjectReference Include="..\..\src\DraftRescue.Infrastructure\DraftRescue.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\DraftRescue.Desktop\DraftRescue.Desktop.csproj" />
   </ItemGroup>
 </Project>
