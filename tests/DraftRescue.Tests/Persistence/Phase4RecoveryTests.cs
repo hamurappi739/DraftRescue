@@ -56,6 +56,24 @@ public sealed class Phase4RecoveryTests
     }
 
     [Fact]
+    public void CorruptDatabaseOpenIsClassifiedAsCorruptWithoutRebuild()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "DraftRescue-WP46-corrupt-" + Guid.NewGuid().ToString("N"));
+        var database = Path.Combine(directory, "drafts.db");
+        try
+        {
+            Directory.CreateDirectory(directory);
+            File.WriteAllBytes(database, Encoding.UTF8.GetBytes("not a sqlite database"));
+
+            var error = Assert.Throws<SqliteStoreException>(() => new SqliteProtectedDraftRepository(database));
+
+            Assert.Equal(StoreOpenResult.Corrupt, SqliteStoreRecovery.Classify(error));
+            Assert.True(File.Exists(database));
+        }
+        finally { Delete(directory); }
+    }
+
+    [Fact]
     public async Task MalformedRowReturnsTypedCorruptionAndNoSalvage()
     {
         var directory = Path.Combine(Path.GetTempPath(), "DraftRescue-WP46-" + Guid.NewGuid().ToString("N"));
