@@ -22,7 +22,7 @@ The scheduler requires an explicit `CheckpointSchedulePolicy`. Trailing debounce
 ## Evidence
 
 - Full solution build: 0 warnings, 0 errors.
-- Full test suite: **180/180** passed.
+- Full test suite: **181/181** passed.
 - Tests cover coalescing, max dirty age, capacity rejection, a single delayed retry budget, newer-pending preservation, stale-sequence rejection, manual due processing, background wakeup, explicit runtime composition, and shutdown.
 
 ## Privacy traceability
