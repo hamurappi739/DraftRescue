@@ -63,7 +63,7 @@ The package is specification-heavy by design. Do not discard or regenerate the r
 
 A Codex foundation audit is included as `CODEX_FOUNDATION_AUDIT_2026-09-02.md`, with its disposition in `CODEX_AUDIT_RESOLUTION_2026-09-02.md`. Audit findings F-001, F-002, F-003 and the SDK-range portion of F-004 are resolved in this package.
 
-This audited/repaired handoff contains **1337 regular files**, including **290 Markdown files**. `FOUNDATION_SHA256SUMS.txt` contains 1337 entries because the checksum file intentionally excludes itself.
+This audited/repaired handoff contains **1420 regular files**, including **294 Markdown files**. `FOUNDATION_SHA256SUMS.txt` contains 1420 entries because the checksum file intentionally excludes itself.
 
 For the original project-generating AI, the current large continuation prompt is `ORIGINAL_AI_MAXIMUM_WORK_PROMPT_2026-09-10.md`. It is intentionally bounded to WP4.8 blocker resolution and must not be used as permission to skip privacy gates or start Phase 5.
 
