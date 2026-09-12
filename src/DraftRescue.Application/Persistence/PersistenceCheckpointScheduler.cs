@@ -98,6 +98,22 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
         }
     }
 
+    public bool TryGetNextDueAt(out long dueAtMonotonicMilliseconds)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        lock (_gate)
+        {
+            if (_pending.Count == 0)
+            {
+                dueAtMonotonicMilliseconds = 0;
+                return false;
+            }
+
+            dueAtMonotonicMilliseconds = _pending.Values.Min(entry => entry.DueAtMonotonicMilliseconds);
+            return true;
+        }
+    }
+
     public CheckpointScheduleResult Schedule(CheckpointCandidate candidate, long nowMonotonicMilliseconds)
     {
         ArgumentNullException.ThrowIfNull(candidate);
