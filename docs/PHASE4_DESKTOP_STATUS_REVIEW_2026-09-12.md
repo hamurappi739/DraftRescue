@@ -9,8 +9,9 @@ The overall Phase 4 exit remains **Inconclusive** because the target-host certif
 ## Evidence
 
 - Debug solution build: 0 warnings, 0 errors.
-- Full test suite: **167/167** passed.
+- Full test suite: **168/168** passed.
 - Startup integration tests verify database creation, startup cleanup, runtime disposal, and typed corruption handling.
+- Startup composition verifies the DPAPI-backed installation-secret boundary before creating the database and exposes the protect-before-repository checkpoint coordinator.
 - View-model tests verify Ready/Unavailable/Incompatible/Corrupt status mapping in Russian and English.
 - The public desktop shell has no body-decryption path and no content-bearing diagnostic output.
 
