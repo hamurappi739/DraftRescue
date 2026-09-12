@@ -17,9 +17,13 @@ public static class SqliteStoreRecovery
     {
         SqliteStoreException { Code: SqliteStoreFailureCode.IncompatibleSchema } => StoreOpenResult.Incompatible,
         SqliteStoreException { Code: SqliteStoreFailureCode.CorruptRecord } => StoreOpenResult.Corrupt,
-        SqliteException sqlite when sqlite.SqliteErrorCode is 11 or 26 => StoreOpenResult.Corrupt,
+        SqliteStoreException { Code: SqliteStoreFailureCode.Unavailable, InnerException: SqliteException sqlite }
+            when IsCorruptionCode(sqlite.SqliteErrorCode) => StoreOpenResult.Corrupt,
+        SqliteException sqlite when IsCorruptionCode(sqlite.SqliteErrorCode) => StoreOpenResult.Corrupt,
         _ => StoreOpenResult.Unavailable
     };
+
+    private static bool IsCorruptionCode(int sqliteErrorCode) => sqliteErrorCode is 11 or 26;
 
     public static string? Quarantine(string databasePath, string quarantineDirectory)
     {
