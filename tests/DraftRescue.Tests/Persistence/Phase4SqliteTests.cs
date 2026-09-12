@@ -132,6 +132,28 @@ public sealed class Phase4SqliteTests
         finally { DeleteTemp(directory); }
     }
 
+    [Fact]
+    public void SchemaShapeMismatchFailsClosedWithoutRebuild()
+    {
+        var (directory, path) = TempStore();
+        try
+        {
+            Directory.CreateDirectory(directory);
+            using (var connection = new SqliteConnection($"Data Source={path};Pooling=false"))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = "CREATE TABLE drafts (draft_id BLOB NOT NULL PRIMARY KEY) WITHOUT ROWID; PRAGMA user_version=1;";
+                command.ExecuteNonQuery();
+            }
+
+            var error = Assert.Throws<SqliteStoreException>(() => new SqliteProtectedDraftRepository(path));
+            Assert.Equal(SqliteStoreFailureCode.CorruptRecord, error.Code);
+            Assert.True(File.Exists(path));
+        }
+        finally { DeleteTemp(directory); }
+    }
+
     private static ProtectedDraftRecordV1 Record(DraftId id, long sequence, string application, DateTimeOffset? expiry = null)
     {
         var updated = expiry?.AddMinutes(-1) ?? DateTimeOffset.UtcNow;
