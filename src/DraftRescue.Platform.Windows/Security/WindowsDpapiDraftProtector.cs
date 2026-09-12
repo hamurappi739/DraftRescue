@@ -22,7 +22,7 @@ public sealed class WindowsDpapiDraftProtector : IDraftProtector
             }
             catch (Exception ex) when (ex is CryptographicException or PlatformNotSupportedException or UnauthorizedAccessException)
             {
-                throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex);
+                throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex, DraftProtectionException.Classify(ex));
             }
 
             return ProtectedDraftPayload.Create(context.ProtectionVersion, protectedBytes);
@@ -47,7 +47,7 @@ public sealed class WindowsDpapiDraftProtector : IDraftProtector
         }
         catch (Exception ex) when (ex is CryptographicException or PlatformNotSupportedException or UnauthorizedAccessException)
         {
-            throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex);
+            throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex, DraftProtectionException.Classify(ex));
         }
 
         try
