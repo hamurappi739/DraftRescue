@@ -1,6 +1,8 @@
 using DraftRescue.Application.Contracts.Persistence;
 using DraftRescue.Application.Contracts.Retention;
+using DraftRescue.Application.Models;
 using DraftRescue.Application.Persistence;
+using DraftRescue.Application.Security;
 using DraftRescue.Application.Retention;
 using DraftRescue.Infrastructure.Persistence;
 using DraftRescue.Platform.Windows.Security;
@@ -27,6 +29,9 @@ public sealed class DesktopPersistenceRuntime : IAsyncDisposable
     private readonly SqliteRetentionService _retentionService;
     private readonly RetentionCleanupCoordinator _retention;
     private readonly PersistenceCheckpointCoordinator _checkpointCoordinator;
+    private readonly object _checkpointWorkerGate = new();
+    private PersistenceCheckpointScheduler? _checkpointScheduler;
+    private PersistenceCheckpointWorker? _checkpointWorker;
     private int _disposed;
 
     private DesktopPersistenceRuntime(
@@ -45,6 +50,56 @@ public sealed class DesktopPersistenceRuntime : IAsyncDisposable
     public IRetentionService Retention => _retentionService;
     public PersistenceCheckpointCoordinator CheckpointCoordinator => _checkpointCoordinator;
     public RetentionCleanupHealth RetentionHealth => _retention.Health;
+    public bool IsCheckpointWorkerRunning => _checkpointWorker?.IsRunning == true;
+
+    /// <summary>
+    /// Starts the optional current-state checkpoint executor. Timing is an
+    /// explicit caller decision; this composition root never invents product
+    /// debounce/max-age defaults while Open Decision 6 remains unresolved.
+    /// </summary>
+    public void StartCheckpointWorker(
+        CheckpointSchedulePolicy policy,
+        IMonotonicClock clock,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        ArgumentNullException.ThrowIfNull(clock);
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+
+        lock (_checkpointWorkerGate)
+        {
+            ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+            if (_checkpointWorker is not null)
+                throw new InvalidOperationException("Checkpoint worker is already started.");
+
+            var scheduler = new PersistenceCheckpointScheduler(policy);
+            var worker = new PersistenceCheckpointWorker(scheduler, _checkpointCoordinator, clock);
+            try
+            {
+                worker.Start(cancellationToken);
+            }
+            catch
+            {
+                scheduler.Dispose();
+                worker.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                throw;
+            }
+
+            _checkpointScheduler = scheduler;
+            _checkpointWorker = worker;
+        }
+    }
+
+    public CheckpointScheduleResult ScheduleCheckpoint(CheckpointCandidate candidate)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+        lock (_checkpointWorkerGate)
+        {
+            ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+            return (_checkpointWorker ?? throw new InvalidOperationException("Checkpoint worker is not started.")).Schedule(candidate);
+        }
+    }
 
     public static async Task<DesktopPersistenceStartupResult> StartDefaultAsync(
         CancellationToken cancellationToken = default)
@@ -142,6 +197,20 @@ public sealed class DesktopPersistenceRuntime : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+
+        PersistenceCheckpointWorker? checkpointWorker;
+        PersistenceCheckpointScheduler? checkpointScheduler;
+        lock (_checkpointWorkerGate)
+        {
+            checkpointWorker = _checkpointWorker;
+            checkpointScheduler = _checkpointScheduler;
+            _checkpointWorker = null;
+            _checkpointScheduler = null;
+        }
+
+        if (checkpointWorker is not null)
+            await checkpointWorker.DisposeAsync().ConfigureAwait(false);
+        checkpointScheduler?.Dispose();
         _checkpointCoordinator.Dispose();
         await _retention.DisposeAsync().ConfigureAwait(false);
         _repository.Dispose();
