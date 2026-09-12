@@ -169,6 +169,7 @@ $record = [ordered]@{
     dpapiProbeResultExitCode = $(if ($null -ne $probe -and $null -ne $probe.probeExitCode) { [int]$probe.probeExitCode } else { $null })
     dpapiProbeExecutionStatus = $(if ($null -ne $probe) { [string]$probe.executionStatus } else { $null })
     dpapiFailureReason = $(if ($null -ne $probe -and $null -ne $probe.failureReason) { [string]$probe.failureReason } else { $null })
+    dpapiFailureStage = $(if ($null -ne $probe -and $null -ne $probe.failureStage) { [string]$probe.failureStage } else { $null })
     processKillProbeExitCode = $killProbeExit
     targetEnvironmentProbeExitCode = $environmentProbeExit
     targetEnvironmentProfileLoadState = $(if ($null -ne $environmentProbe -and $null -ne $environmentProbe.profile) { [string]$environmentProbe.profile.loadState } else { $null })
