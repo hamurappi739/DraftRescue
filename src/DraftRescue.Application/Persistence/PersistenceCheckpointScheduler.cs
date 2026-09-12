@@ -136,6 +136,7 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
                     return new CheckpointScheduleResult(CheckpointScheduleOutcome.StaleIgnored, candidate.Snapshot.SnapshotSequence);
 
                 existing.Candidate = candidate;
+                existing.RetryCount = 0;
                 existing.DueAtMonotonicMilliseconds = ComputeDueAt(existing.DirtySinceMonotonicMilliseconds, nowMonotonicMilliseconds);
                 return new CheckpointScheduleResult(CheckpointScheduleOutcome.Coalesced, candidate.Snapshot.SnapshotSequence);
             }
@@ -146,7 +147,8 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
             _pending[candidate.DraftId] = new PendingEntry(
                 candidate,
                 nowMonotonicMilliseconds,
-                ComputeDueAt(nowMonotonicMilliseconds, nowMonotonicMilliseconds));
+                ComputeDueAt(nowMonotonicMilliseconds, nowMonotonicMilliseconds),
+                retryCount: 0);
             return new CheckpointScheduleResult(CheckpointScheduleOutcome.Scheduled, candidate.Snapshot.SnapshotSequence);
         }
     }
@@ -170,7 +172,10 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
             }
 
             _pending.Remove(due.Key);
-            _inFlight[due.Key] = new InFlightEntry(due.Value.Candidate, due.Value.DirtySinceMonotonicMilliseconds);
+            _inFlight[due.Key] = new InFlightEntry(
+                due.Value.Candidate,
+                due.Value.DirtySinceMonotonicMilliseconds,
+                due.Value.RetryCount);
             candidate = due.Value.Candidate;
             return true;
         }
@@ -196,21 +201,23 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
             }
 
             _inFlight.Remove(candidate.DraftId);
-            if (outcome is CheckpointOutcome.ProtectionFailed or CheckpointOutcome.RepositoryFailed)
+            if ((outcome is CheckpointOutcome.ProtectionFailed or CheckpointOutcome.RepositoryFailed) && inFlight.RetryCount == 0)
             {
                 if (!_pending.TryGetValue(candidate.DraftId, out var newer))
                 {
                     _pending[candidate.DraftId] = new PendingEntry(
                         candidate,
                         inFlight.DirtySinceMonotonicMilliseconds,
-                        AddMilliseconds(nowMonotonicMilliseconds, _policy.RetryDelayMilliseconds));
+                        AddMilliseconds(nowMonotonicMilliseconds, _policy.RetryDelayMilliseconds),
+                        retryCount: 1);
                 }
                 else if (newer.Candidate.Snapshot.SnapshotSequence <= candidate.Snapshot.SnapshotSequence)
                 {
                     _pending[candidate.DraftId] = new PendingEntry(
                         candidate,
                         inFlight.DirtySinceMonotonicMilliseconds,
-                        AddMilliseconds(nowMonotonicMilliseconds, _policy.RetryDelayMilliseconds));
+                        AddMilliseconds(nowMonotonicMilliseconds, _policy.RetryDelayMilliseconds),
+                        retryCount: 1);
                 }
             }
 
@@ -241,14 +248,17 @@ public sealed class PersistenceCheckpointScheduler : IDisposable
     private sealed class PendingEntry(
         CheckpointCandidate candidate,
         long dirtySinceMonotonicMilliseconds,
-        long dueAtMonotonicMilliseconds)
+        long dueAtMonotonicMilliseconds,
+        int retryCount)
     {
         public CheckpointCandidate Candidate { get; set; } = candidate;
         public long DirtySinceMonotonicMilliseconds { get; } = dirtySinceMonotonicMilliseconds;
         public long DueAtMonotonicMilliseconds { get; set; } = dueAtMonotonicMilliseconds;
+        public int RetryCount { get; set; } = retryCount;
     }
 
     private sealed record InFlightEntry(
         CheckpointCandidate Candidate,
-        long DirtySinceMonotonicMilliseconds);
+        long DirtySinceMonotonicMilliseconds,
+        int RetryCount);
 }
