@@ -67,6 +67,21 @@ public sealed class Phase4CoordinatorTests
     }
 
     [Fact]
+    public async Task CancellationDuringProtectionDiscardsCiphertextBeforeRepository()
+    {
+        using var cancellation = new CancellationTokenSource();
+        var protector = new FakeProtector { OnProtect = cancellation.Cancel };
+        var repository = new FakeRepository();
+        using var coordinator = new PersistenceCheckpointCoordinator(protector, repository);
+
+        var result = await coordinator.CheckpointAsync(Candidate(), cancellation.Token);
+
+        Assert.Equal(CheckpointOutcome.Cancelled, result.Outcome);
+        Assert.Equal(1, protector.Calls);
+        Assert.Equal(0, repository.Calls);
+    }
+
+    [Fact]
     public async Task StaleRepositoryResultDoesNotBecomeCheckpointCommit()
     {
         var repository = new FakeRepository { Result = ProtectedDraftUpsertResult.StaleIgnored };
@@ -106,6 +121,7 @@ public sealed class Phase4CoordinatorTests
         public int MaxConcurrentCalls;
         public bool ThrowOnProtect;
         public int DelayMilliseconds;
+        public Action? OnProtect;
 
         public ProtectedDraftPayload Protect(DraftPlaintextPayload plaintext, DraftProtectionContext context)
         {
@@ -115,6 +131,7 @@ public sealed class Phase4CoordinatorTests
             try
             {
                 if (ThrowOnProtect) throw new InvalidOperationException("synthetic protection failure");
+                OnProtect?.Invoke();
                 if (DelayMilliseconds > 0) Thread.Sleep(DelayMilliseconds);
                 return ProtectedDraftPayload.Create(1, new byte[] { 9 });
             }
