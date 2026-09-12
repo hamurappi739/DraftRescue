@@ -89,13 +89,20 @@ ORDER BY updated_at_utc_ms DESC;
             var result = new List<RecoverableDraftMetadata>();
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                result.Add(new RecoverableDraftMetadata(
-                    new DraftId(new Guid((byte[])reader[0])),
-                    reader.GetString(1),
-                    (DraftPresentationKind)reader.GetInt32(2),
-                    FromUnixMilliseconds(reader.GetInt64(3)),
-                    FromUnixMilliseconds(reader.GetInt64(4)),
-                    (RecoverableState)reader.GetInt32(5)));
+                try
+                {
+                    result.Add(new RecoverableDraftMetadata(
+                        new DraftId(new Guid((byte[])reader[0])),
+                        reader.GetString(1),
+                        (DraftPresentationKind)reader.GetInt32(2),
+                        FromUnixMilliseconds(reader.GetInt64(3)),
+                        FromUnixMilliseconds(reader.GetInt64(4)),
+                        (RecoverableState)reader.GetInt32(5)));
+                }
+                catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or InvalidCastException or FormatException or OverflowException)
+                {
+                    throw new SqliteStoreException(SqliteStoreFailureCode.CorruptRecord, ex);
+                }
             }
             return result;
         }
