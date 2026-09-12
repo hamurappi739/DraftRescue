@@ -29,7 +29,7 @@ public sealed partial class App : Avalonia.Application
                 _persistenceRuntime = null;
             };
 
-            var viewModel = new MainWindowViewModel();
+            var viewModel = new MainWindowViewModel(persistence.Availability);
             viewModel.ThemeChanged += (_, _) =>
             {
                 RequestedThemeVariant = viewModel.IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
