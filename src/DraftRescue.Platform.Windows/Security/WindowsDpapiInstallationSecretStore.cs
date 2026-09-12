@@ -35,7 +35,7 @@ public sealed class WindowsDpapiInstallationSecretStore : IInstallationSecretPro
             }
             catch (Exception ex) when (ex is CryptographicException or PlatformNotSupportedException or UnauthorizedAccessException)
             {
-                throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex);
+                throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex, DraftProtectionException.Classify(ex));
             }
 
             var encoded = Encode(protectedKey);
@@ -97,7 +97,7 @@ public sealed class WindowsDpapiInstallationSecretStore : IInstallationSecretPro
                 }
                 catch (Exception ex) when (ex is CryptographicException or PlatformNotSupportedException or UnauthorizedAccessException)
                 {
-                    throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex);
+                    throw new DraftProtectionException(DraftProtectionFailureCode.DpapiFailure, ex, DraftProtectionException.Classify(ex));
                 }
 
                 try { return InstallationSecret.Create(key); }
