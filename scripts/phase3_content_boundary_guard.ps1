@@ -9,7 +9,10 @@ $roots = @(
     (Join-Path $RepositoryRoot 'src\DraftRescue.Application\Models\FieldTextSnapshot.cs'),
     (Join-Path $RepositoryRoot 'src\DraftRescue.Application\Models\DraftTrackingModels.cs'),
     (Join-Path $RepositoryRoot 'src\DraftRescue.Application\Drafts'),
-    (Join-Path $RepositoryRoot 'src\DraftRescue.Platform.Windows')
+    (Join-Path $RepositoryRoot 'src\DraftRescue.Platform.Windows\Automation'),
+    (Join-Path $RepositoryRoot 'src\DraftRescue.Platform.Windows\Observation'),
+    (Join-Path $RepositoryRoot 'src\DraftRescue.Platform.Windows\Reading'),
+    (Join-Path $RepositoryRoot 'src\DraftRescue.Platform.Windows\Reliability')
 )
 $files = @($roots | ForEach-Object {
     if (Test-Path -LiteralPath $_) {
