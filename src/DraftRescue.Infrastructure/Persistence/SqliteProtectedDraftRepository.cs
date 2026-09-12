@@ -199,7 +199,7 @@ FROM drafts WHERE draft_id = $id;
                 reader.GetInt32(7), (byte[])reader[8], payload, reader.GetInt64(11), FromUnixMilliseconds(reader.GetInt64(12)),
                 FromUnixMilliseconds(reader.GetInt64(13)), FromUnixMilliseconds(reader.GetInt64(14)), (RecoverableState)reader.GetInt32(15));
         }
-        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or InvalidCastException or FormatException or OverflowException)
         {
             throw new SqliteStoreException(SqliteStoreFailureCode.CorruptRecord, ex);
         }
