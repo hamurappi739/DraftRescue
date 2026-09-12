@@ -5,6 +5,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'phase4_test_metrics.ps1')
 $outputPath = Join-Path $repoRoot $OutputDirectory
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
 
@@ -14,8 +15,8 @@ if (-not $SkipBuild) {
     $buildExit = $LASTEXITCODE
 }
 
-& dotnet test (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj') --no-build -c Debug --nologo
-$testExit = $LASTEXITCODE
+$testMetrics = Invoke-Phase4TestSuite (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj')
+$testExit = $testMetrics.ExitCode
 
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'phase4_contracts_guard.ps1') -RepositoryRoot $repoRoot -OutputDirectory $OutputDirectory
 $guardExit = $LASTEXITCODE
@@ -38,7 +39,7 @@ $record = [ordered]@{
         build_exit_code = $buildExit
         build_skipped = [bool]$SkipBuild
         test_exit_code = $testExit
-        test_count = 121
+        test_count = $testMetrics.Total
         contracts_guard_exit_code = $guardExit
         contracts_guard_outcome = if ($null -eq $guard) { 'NotRun' } else { [string]$guard.outcome }
         plaintext_repository_accepted = $false

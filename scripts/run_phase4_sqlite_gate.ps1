@@ -5,6 +5,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'phase4_test_metrics.ps1')
 $outputPath = Join-Path $repoRoot $OutputDirectory
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
 $buildExit = 0
@@ -12,8 +13,8 @@ if (-not $SkipBuild) {
     & dotnet build (Join-Path $repoRoot 'DraftRescue.sln') --no-restore -c Debug --nologo
     $buildExit = $LASTEXITCODE
 }
-& dotnet test (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj') --no-build -c Debug --nologo
-$testExit = $LASTEXITCODE
+$testMetrics = Invoke-Phase4TestSuite (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj')
+$testExit = $testMetrics.ExitCode
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'phase4_sqlite_guard.ps1') -RepositoryRoot $repoRoot -OutputDirectory $OutputDirectory
 $guardExit = $LASTEXITCODE
 $guardPath = Join-Path $outputPath 'PHASE4-SQLITE-BOUNDARY-GUARD.json'
@@ -34,7 +35,7 @@ $record = [ordered]@{
         build_exit_code = $buildExit
         build_skipped = [bool]$SkipBuild
         test_exit_code = $testExit
-        test_count = 133
+        test_count = $testMetrics.Total
         boundary_guard_exit_code = $guardExit
         boundary_guard_outcome = if ($null -eq $guard) { 'NotRun' } else { [string]$guard.outcome }
         sqlite_schema_version = 1
