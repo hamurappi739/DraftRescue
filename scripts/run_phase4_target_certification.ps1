@@ -78,6 +78,7 @@ $record = [ordered]@{
     dpapiProbeHarnessExitCode = $dpapiExit
     dpapiProbeResultExitCode = $(if ($null -ne $dpapi -and $null -ne $dpapi.probeExitCode) { [int]$dpapi.probeExitCode } else { $null })
     dpapiFailureReason = $(if ($null -ne $dpapi -and $null -ne $dpapi.failureReason) { [string]$dpapi.failureReason } else { $null })
+    dpapiFailureStage = $(if ($null -ne $dpapi -and $null -ne $dpapi.failureStage) { [string]$dpapi.failureStage } else { $null })
     diskFullEvidenceLoadStatus = $(if ($null -ne $diskFullLoadFailure) { $diskFullLoadFailure } elseif ($null -ne $diskFull) { 'Loaded' } else { 'NotSupplied' })
     environmentProfileLoadState = $(if ($null -ne $environment -and $null -ne $environment.profile) { [string]$environment.profile.loadState } else { $null })
     environmentProfileLoadStateQueryAvailable = $(if ($null -ne $environment -and $null -ne $environment.profile) { [bool]$environment.profile.loadStateQueryAvailable } else { $false })
