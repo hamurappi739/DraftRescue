@@ -154,6 +154,33 @@ public sealed class Phase4RecoveryTests
     }
 
     [Fact]
+    public async Task UnknownPresentationKindReturnsTypedCorruption()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "DraftRescue-WP46-enum-" + Guid.NewGuid().ToString("N"));
+        var database = Path.Combine(directory, "drafts.db");
+        try
+        {
+            using (var repository = new SqliteProtectedDraftRepository(database)) { }
+            await using (var connection = new SqliteConnection($"Data Source={database};Pooling=false"))
+            {
+                await connection.OpenAsync(TestContext.Current.CancellationToken);
+                await using var command = connection.CreateCommand();
+                command.CommandText = "INSERT INTO drafts (draft_id, record_schema_version, application_id, presentation_kind, fingerprint_version, match_metadata_version, match_metadata, protected_payload, protection_version, snapshot_sequence, created_at_utc_ms, updated_at_utc_ms, expires_at_utc_ms, recoverable_state) VALUES ($id,1,'app',999,1,1,$meta,$payload,1,0,0,0,1,0);";
+                command.Parameters.AddWithValue("$id", DraftId.New().Value.ToByteArray());
+                command.Parameters.AddWithValue("$meta", new byte[] { 1 });
+                command.Parameters.AddWithValue("$payload", new byte[] { 2 });
+                await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+            }
+
+            using var loadedRepository = new SqliteProtectedDraftRepository(database);
+            var error = await Assert.ThrowsAsync<SqliteStoreException>(() =>
+                loadedRepository.GetProtectedAsync(new DraftId(ReadFirstId(database)), TestContext.Current.CancellationToken));
+            Assert.Equal(SqliteStoreFailureCode.CorruptRecord, error.Code);
+        }
+        finally { Delete(directory); }
+    }
+
+    [Fact]
     public async Task LockedStoreReturnsBoundedTypedFailureWithoutFallback() // P4F-006
     {
         var stopwatch = Stopwatch.StartNew();
