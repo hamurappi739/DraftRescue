@@ -1,13 +1,18 @@
-$ErrorActionPreference = 'Stop'
-
-$repoRoot = Split-Path -Parent $PSScriptRoot
-$sourceRoots = @(
-    (Join-Path $repoRoot 'src\DraftRescue.Application'),
-    (Join-Path $repoRoot 'src\DraftRescue.Platform.Windows')
+param(
+    [string]$RepositoryRoot = (Split-Path -Parent $PSScriptRoot)
 )
 
-# This guard is intended for Phase 2 only. Phase 3 will intentionally add an
-# eligible content reader and must replace this gate with a capability-aware one.
+$ErrorActionPreference = 'Stop'
+
+$repoRoot = [System.IO.Path]::GetFullPath($RepositoryRoot)
+$sourceRoots = @(
+    (Join-Path $repoRoot 'src\DraftRescue.Application\Security'),
+    (Join-Path $repoRoot 'src\DraftRescue.Platform.Windows\Security')
+)
+
+# Phase 3 is allowed to add content readers under Platform.Windows/Reading. Keep
+# this guard focused on the Phase 2 security components so the historical gate
+# remains useful without treating the authorized Phase 3 reader as a violation.
 $forbiddenPatterns = @(
     'ValuePattern\s*\.\s*Value',
     'DocumentRange\s*\.\s*GetText',
@@ -20,7 +25,11 @@ $forbiddenPatterns = @(
     'IEligibleFieldTextReader\s+[A-Za-z_]'
 )
 
-$files = Get-ChildItem -Path $sourceRoots -Recurse -File -Include *.cs
+$files = @($sourceRoots | ForEach-Object {
+    if (Test-Path -LiteralPath $_) {
+        Get-ChildItem -LiteralPath $_ -Recurse -File -Filter '*.cs'
+    }
+})
 $violations = @()
 foreach ($pattern in $forbiddenPatterns) {
     $matches = $files | Select-String -Pattern $pattern
