@@ -99,6 +99,7 @@
 92. Все Phase-4 runners получили bounded MSBuild/process-scope настройку (`MSBUILDDISABLENODEREUSE=1`) и сохраняют только структурные cleanup counters. Документация уточнена: настройка снижает cross-run contamination risk, но не подменяет реальную target certification.
 93. Readiness hardening завершён: DPAPI probe различает `Loaded`, `NotLoaded`, `Unknown` и `QueryUnavailable`, а неизвестные profile-state значения получают `profile-state-unrecognized`. Artifact privacy guard проверяет закрытые readiness status/blocker labels и отклоняет `Pass` с непустым blocker list; текущий guard проверил `2` readiness contracts и дал `Pass`. Handoff guard теперь требует эту coverage перед собственным `Pass`.
 94. Выполнена полная prior-gate regression-проверка: runners WP4.1/WP4.2/WP4.3/WP4.4/WP4.6/WP4.7 повторно прошли с актуальным suite `181/181`, все дали `Pass`. Исторические scope/closure counts сохранены, а aggregate handoff дополнен отдельным `priorGateRegressionTestSuite=181/181`.
+95. Общий process-cleanup helper усилен bounded post-run drain: до `8` попыток с интервалом `250 ms` повторно обнаруживают только новые безоконные `dotnet`-процессы, созданные после baseline в пределах запуска. Успешные остановки и оставшиеся leaks считаются уникально, поздние дочерние hosts больше не теряются из-за единственного снимка; baseline PID и чужие/оконные процессы не затрагиваются.
 
 ## Проверка результата
 

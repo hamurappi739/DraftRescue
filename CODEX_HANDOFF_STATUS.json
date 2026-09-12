@@ -291,7 +291,8 @@
     "testSuite": "181/181",
     "priorGateRegressionTestSuite": "181/181",
     "priorGateRegressionAllPass": true,
-    "priorGateRegressionLatestRunId": "20260912T230748Z",
+    "priorGateRegressionLatestRunId": "20260912T232559Z",
+    "latestExitGateRunId": "20260912T232407Z",
     "sourceBoundary": "Pass",
     "priorGatesPresent": true,
     "dpapiCurrentUserRoundTripObserved": false,
@@ -340,7 +341,10 @@
     "handoffConsistencyGuardFindings": 0,
     "ownedDotnetProcessCleanup": {
       "latestGateLeakedCount": 0,
-      "latestTargetCertificationLeakedCount": 0
+      "latestTargetCertificationLeakedCount": 0,
+      "drainMaxAttempts": 8,
+      "drainIntervalMilliseconds": 250,
+      "scope": "new-windowless-dotnet-after-baseline-within-run-window"
     },
     "relevantPrivacyInvariants": [
       "P-008",
