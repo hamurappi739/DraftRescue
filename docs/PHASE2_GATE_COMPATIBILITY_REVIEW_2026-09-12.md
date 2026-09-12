@@ -19,7 +19,7 @@ This is a test-boundary correction only. It does not loosen the security policy,
 
 ## Verification
 
-- Full test suite: **167/167** passed.
+- Full test suite: **168/168** passed.
 - Phase 2 content-boundary guard: Pass after the scope correction.
 - Phase 3 content-boundary guard: remains Pass.
 - No target-content fixture, clipboard access, keyboard hook, or logging path was added.
