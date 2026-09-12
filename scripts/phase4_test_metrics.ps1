@@ -4,6 +4,8 @@ function Invoke-Phase4TestSuite {
         [string]$ProjectPath
     )
 
+    $runStart = Get-Date
+    $baselineDotnetIds = @(Get-Process dotnet -ErrorAction SilentlyContinue | ForEach-Object { [int]$_.Id })
     $previousLanguage = $env:DOTNET_CLI_UI_LANGUAGE
     $env:DOTNET_CLI_UI_LANGUAGE = 'en'
     try {
@@ -12,6 +14,21 @@ function Invoke-Phase4TestSuite {
     finally {
         if ($null -eq $previousLanguage) { Remove-Item Env:DOTNET_CLI_UI_LANGUAGE -ErrorAction SilentlyContinue }
         else { $env:DOTNET_CLI_UI_LANGUAGE = $previousLanguage }
+    }
+    Start-Sleep -Milliseconds 250
+    $cleanedProcessIds = [System.Collections.Generic.List[int]]::new()
+    $leakedProcessIds = [System.Collections.Generic.List[int]]::new()
+    foreach ($process in @(Get-Process dotnet -ErrorAction SilentlyContinue)) {
+        $isNew = $baselineDotnetIds -notcontains [int]$process.Id
+        $isWindowless = [string]::IsNullOrEmpty($process.MainWindowTitle)
+        $startedDuringRun = $false
+        try { $startedDuringRun = $process.StartTime -ge $runStart } catch { }
+        if (-not ($isNew -and $isWindowless -and $startedDuringRun)) { continue }
+        try {
+            Stop-Process -Id $process.Id -Force -ErrorAction Stop
+            $cleanedProcessIds.Add([int]$process.Id)
+        }
+        catch { $leakedProcessIds.Add([int]$process.Id) }
     }
     foreach ($line in $lines) { Write-Host $line }
     $exitCode = $LASTEXITCODE
@@ -30,5 +47,8 @@ function Invoke-Phase4TestSuite {
         Passed = $passed
         Total = $total
         Suite = if ($null -ne $passed -and $null -ne $total) { "$passed/$total" } else { 'unknown' }
+        CleanedProcessCount = $cleanedProcessIds.Count
+        LeakedProcessCount = $leakedProcessIds.Count
+        LeakedProcessIds = @($leakedProcessIds)
     }
 }
