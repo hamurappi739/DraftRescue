@@ -11,20 +11,30 @@ var database = args.Length > 1 ? Path.GetFullPath(args[1]) : string.Empty;
 switch (mode)
 {
     case "dpapi":
+        var failureStage = "Unknown";
         try
         {
             var id = new DraftId(Guid.NewGuid());
             var context = DraftProtectionContext.Create(id, 1);
             var protector = new WindowsDpapiDraftProtector();
             var plaintext = DraftPlaintextPayload.Create("DR_RUNTIME_PROBE_CANARY");
+            failureStage = "Protect";
             var protectedPayload = protector.Protect(plaintext, context);
+            failureStage = "Unprotect";
             var roundTrip = protector.Unprotect(protectedPayload, context);
-            return roundTrip.Text == plaintext.Text && protectedPayload.Bytes.Length > 0 ? 0 : 5;
+            if (roundTrip.Text != plaintext.Text || protectedPayload.Bytes.Length == 0)
+            {
+                Console.WriteLine("failureStage=Validation");
+                return 5;
+            }
+            Console.WriteLine("failureStage=None");
+            return 0;
         }
         catch (DraftProtectionException error)
         {
             // Only an audited structural reason is emitted; never print the
             // provider exception message or any payload-derived value.
+            Console.WriteLine($"failureStage={failureStage}");
             Console.WriteLine($"failureReason={error.Reason}");
             return 6;
         }
