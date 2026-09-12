@@ -15,6 +15,7 @@ $record = [ordered]@{
     syntheticOnly = $true
     available = $false
     failureCode = $null
+    failureReason = 'Unknown'
     probeExitCode = $null
     harnessExitCode = 0
     executionStatus = 'NotStarted'
@@ -31,15 +32,18 @@ try {
         throw 'probe-build-failed'
     }
     $record.executionStatus = 'ProbeStarted'
-    & dotnet $dll dpapi | Out-Null
+    $probeOutput = @(& dotnet $dll dpapi 2>&1)
     $record.probeExitCode = $LASTEXITCODE
     $record.available = ($LASTEXITCODE -eq 0)
     if ($record.available) {
         $record.failureCode = 'None'
+        $record.failureReason = 'None'
         $record.executionStatus = 'ProbePass'
     }
     else {
         $record.failureCode = if ($LASTEXITCODE -eq 6) { 'DpapiFailure' } elseif ($LASTEXITCODE -eq 2) { 'ProbeArgumentOrStartupFailure' } else { 'DpapiProbeUnexpectedExit' }
+        $reasonMatch = [regex]::Match(($probeOutput -join "`n"), '(?m)^failureReason=(PlatformNotSupported|Unauthorized|Cryptographic|Unknown)$')
+        if ($reasonMatch.Success) { $record.failureReason = $reasonMatch.Groups[1].Value }
         $record.executionStatus = if ($LASTEXITCODE -eq 6) { 'ProbeCompletedDpapiUnavailable' } else { 'ProbeCompletedUnexpectedly' }
     }
 }
