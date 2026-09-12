@@ -97,6 +97,8 @@
 90. Диагностика DPAPI стала структурной: `DraftProtectionFailureReason` (`PlatformNotSupported`, `Unauthorized`, `Cryptographic`, `Unknown`) передаётся через платформенный слой и сохраняется только как закрытая категория, без текста исключения.
 91. Скомпилированный DPAPI probe v3 проверяет оба CurrentUser пути — payload и installation HMAC secret — и публикует только boolean round-trip, `failureStage`, `failureReason` и закрытый `readiness.blockers`. На текущем host оба round-trip не наблюдаются; `harnessExitCode=0`, то есть это повторяемый target result, а не поломка harness.
 92. Все Phase-4 runners получили bounded MSBuild/process-scope настройку (`MSBUILDDISABLENODEREUSE=1`) и сохраняют только структурные cleanup counters. Документация уточнена: настройка снижает cross-run contamination risk, но не подменяет реальную target certification.
+93. Readiness hardening завершён: DPAPI probe различает `Loaded`, `NotLoaded`, `Unknown` и `QueryUnavailable`, а неизвестные profile-state значения получают `profile-state-unrecognized`. Artifact privacy guard проверяет закрытые readiness status/blocker labels и отклоняет `Pass` с непустым blocker list; текущий guard проверил `2` readiness contracts и дал `Pass`. Handoff guard теперь требует эту coverage перед собственным `Pass`.
+94. Выполнена полная prior-gate regression-проверка: runners WP4.1/WP4.2/WP4.3/WP4.4/WP4.6/WP4.7 повторно прошли с актуальным suite `181/181`, все дали `Pass`. Исторические scope/closure counts сохранены, а aggregate handoff дополнен отдельным `priorGateRegressionTestSuite=181/181`.
 
 ## Проверка результата
 
