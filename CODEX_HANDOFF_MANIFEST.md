@@ -74,6 +74,6 @@ F-002 was resolved by the real Windows x64 restore/build/test and Avalonia shell
 
 ## Current audited package inventory
 
-- Regular files: **1337**
-- Markdown files: **290**
-- SHA-256 entries: **1337** (`FOUNDATION_SHA256SUMS.txt` excludes itself)
+- Regular files: **1420**
+- Markdown files: **294**
+- SHA-256 entries: **1420** (`FOUNDATION_SHA256SUMS.txt` excludes itself)
