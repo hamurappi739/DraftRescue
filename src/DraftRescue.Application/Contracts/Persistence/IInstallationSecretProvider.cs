@@ -6,6 +6,12 @@ public interface IInstallationSecretProvider
     Task<InstallationSecret> GetOrCreateAsync(CancellationToken cancellationToken = default);
 }
 
+public interface IAppDataPathProvider
+{
+    string DatabasePath { get; }
+    string InstallationSecretPath { get; }
+}
+
 public sealed class InstallationSecret
 {
     private readonly byte[] _bytes;
