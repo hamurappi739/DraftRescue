@@ -2,7 +2,7 @@
 
 ## Decision
 
-The current-state checkpoint path is implemented as an application-layer planner plus bounded background executor over `PersistenceCheckpointCoordinator`. The scheduler never writes or protects text itself; the worker takes due candidates and passes them through the existing protect-before-repository coordinator.
+The current-state checkpoint path is implemented as an application-layer planner plus bounded background executor over `PersistenceCheckpointCoordinator`. The scheduler never writes or protects text itself; the worker takes due candidates and passes them through the existing protect-before-repository coordinator. `DesktopPersistenceRuntime` now composes and owns this worker only when the caller supplies an explicit timing policy and monotonic clock.
 
 ## Guarantees
 
@@ -22,8 +22,8 @@ The scheduler requires an explicit `CheckpointSchedulePolicy`. Trailing debounce
 ## Evidence
 
 - Full solution build: 0 warnings, 0 errors.
-- Full test suite: **179/179** passed.
-- Tests cover coalescing, max dirty age, capacity rejection, a single delayed retry budget, newer-pending preservation, stale-sequence rejection, manual due processing, background wakeup, and shutdown.
+- Full test suite: **180/180** passed.
+- Tests cover coalescing, max dirty age, capacity rejection, a single delayed retry budget, newer-pending preservation, stale-sequence rejection, manual due processing, background wakeup, explicit runtime composition, and shutdown.
 
 ## Privacy traceability
 
