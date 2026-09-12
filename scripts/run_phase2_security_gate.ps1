@@ -25,7 +25,7 @@ if ($IncludeNativeFixture -and -not $SkipBuild) {
 & dotnet test (Join-Path $repoRoot 'tests\DraftRescue.Tests\DraftRescue.Tests.csproj') --no-build -c Debug --nologo
 $testExit = $LASTEXITCODE
 
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'phase2_content_boundary_guard.ps1')
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'phase2_content_boundary_guard.ps1') -RepositoryRoot $repoRoot
 $guardExit = $LASTEXITCODE
 
 $nativeExit = 0
